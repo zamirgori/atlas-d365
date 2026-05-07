@@ -6,627 +6,483 @@
 <title>Atlas — D365 Process Navigator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ── Reset ─────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%}
-body{height:100%;font-family:'Source Serif 4',Georgia,serif;background:#F4EFE8;color:#2C2820;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Source Serif 4',Georgia,serif;background:#F4EFE8;color:#2C2820;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+a{color:inherit}
 
-/* ── Tokens ─────────────────────────────────────────────────────── */
 :root{
-  --bg:#F4EFE8;
-  --panel:#EBE5DA;
-  --panel2:#E4DDD0;
-  --card:#FAFAF7;
-  --bd:#D5CEBF;
-  --bd-soft:#E0D9CE;
-  --tx:#2C2820;
-  --tx2:#6A6155;
-  --tx3:#9C9186;
-  --sage:#6B7D69;
-  --sage-bg:#EBF0EB;
-  --olive:#818F4A;
-  --warm:#A87D55;
-  --warm-bg:#F5EDDF;
-  --e2e:#3D5E3A;
-  --area:#4A6B80;
-  --proc:#6B5A42;
-  --scen:#7A6B52;
-  --sysp:#5A6B7A;
-  --test:#7A5A6B;
-  --active:#E5DDD0;
-  --hover:#EDE7DC;
-  --radius:6px;
-  --shadow:0 1px 4px rgba(44,40,32,.08);
+  --bg:#F4EFE8;--panel:#EBE5DA;--panel2:#E2DBD0;
+  --card:#FAFAF7;--bd:#D5CEBF;--bd-soft:#E0D9CE;
+  --tx:#2C2820;--tx2:#6A6155;--tx3:#9C9186;
+  --sage:#6B7D69;--sage-bg:#EBF0EB;
+  --warm:#A87D55;--warm-bg:#F5EDDF;
+  --e2e:#3D5E3A;--area:#4A6B80;--proc:#6B5A42;
+  --scen:#7A6B52;--sysp:#4A6B7A;--test:#7A4A6B;
+  --active:#E2D9CC;--hover:#EDE7DC;--radius:6px;
 }
 
-/* ── Layout Shell ────────────────────────────────────────────────── */
+/* ─── Shell ─────────────────────────── */
 #app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-/* ── Header ─────────────────────────────────────────────────────── */
-#header{
-  background:var(--panel2);
-  border-bottom:1px solid var(--bd);
-  display:flex;align-items:center;gap:12px;
-  padding:8px 14px;
-  flex-shrink:0;
-  z-index:100;
+/* ─── Header ────────────────────────── */
+#hdr{
+  background:var(--panel2);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:10px;
+  padding:0 14px;height:44px;flex-shrink:0;z-index:100;
 }
-.wordmark{
-  font-family:'Cormorant Garamond',Georgia,serif;
-  font-size:18px;font-weight:600;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--tx);white-space:nowrap;
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:17px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tx);text-decoration:none;white-space:nowrap;
 }
-.wordmark span{color:var(--sage);font-weight:400}
-.h-sep{color:var(--bd);font-size:18px}
-#breadcrumb{
-  display:flex;align-items:center;gap:4px;flex:1;
-  overflow:hidden;font-size:12px;color:var(--tx3);
-}
-.bc-item{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-.bc-item:hover{color:var(--sage);text-decoration:underline}
-.bc-item.active{color:var(--tx2)}
-.bc-sep{color:var(--bd);flex-shrink:0;font-size:11px}
-#search-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:5px 11px;background:var(--card);
+.logo em{color:var(--sage);font-style:normal}
+.hdiv{width:1px;height:20px;background:var(--bd);flex-shrink:0}
+#bc{display:flex;align-items:center;gap:3px;flex:1;overflow:hidden;font-size:11.5px;min-width:0}
+.bc-p{color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;cursor:pointer}
+.bc-p:hover{color:var(--sage);text-decoration:underline}
+.bc-p.cur{color:var(--tx2);font-weight:500}
+.bc-s{color:var(--bd);font-size:10px;flex-shrink:0}
+#nc{font-size:11px;color:var(--tx3);white-space:nowrap;padding:0 2px}
+.hbtn{
+  display:flex;align-items:center;gap:5px;padding:5px 10px;
   border:1px solid var(--bd);border-radius:var(--radius);
-  font-size:12px;color:var(--tx2);cursor:pointer;
-  font-family:inherit;white-space:nowrap;transition:border-color .15s;
+  font-size:12px;color:var(--tx2);background:var(--card);
+  white-space:nowrap;cursor:pointer;transition:border-color .15s,color .15s;flex-shrink:0;
 }
-#search-btn:hover{border-color:var(--sage)}
-.kbd{
-  font-size:10px;color:var(--tx3);background:var(--panel);
-  border:1px solid var(--bd);border-radius:3px;padding:1px 5px;
-  font-family:'JetBrains Mono',monospace;
-}
-#node-count{font-size:11px;color:var(--tx3);white-space:nowrap}
+.hbtn:hover{border-color:var(--sage);color:var(--sage)}
+.hbtn.about-btn:hover{border-color:var(--warm);color:var(--warm)}
+.kbd{font-size:10px;color:var(--tx3);background:var(--panel);border:1px solid var(--bd);border-radius:3px;padding:1px 5px;font-family:'JetBrains Mono',monospace}
 
-/* ── Body Three Zones ─────────────────────────────────────────────── */
+/* ─── Body ───────────────────────────── */
 #body{display:flex;flex:1;overflow:hidden}
 
-/* ── Left Panel ─────────────────────────────────────────────────── */
+/* ─── Left Panel ─────────────────────── */
 #left{
-  width:260px;min-width:220px;max-width:320px;
-  background:var(--panel);border-right:1px solid var(--bd);
+  width:268px;min-width:200px;background:var(--panel);
+  border-right:1px solid var(--bd);
   display:flex;flex-direction:column;flex-shrink:0;
-  resize:horizontal;overflow:hidden;
 }
-
 /* Filters */
-#filters{
-  padding:10px 10px 8px;
-  border-bottom:1px solid var(--bd-soft);
-  flex-shrink:0;
+#filters{padding:10px 10px 8px;border-bottom:1px solid var(--bd-soft);flex-shrink:0}
+.fl{font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;font-weight:500}
+.fsw{position:relative;margin-bottom:5px}
+.fsel{
+  width:100%;padding:5px 22px 5px 8px;border:1px solid var(--bd);
+  border-radius:var(--radius);background:var(--card);color:var(--tx2);
+  font-size:12px;font-family:inherit;appearance:none;cursor:pointer;
 }
-.f-label{font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;font-weight:500}
-.f-select-wrap{position:relative;margin-bottom:6px}
-.f-select{
-  width:100%;padding:5px 24px 5px 8px;
-  border:1px solid var(--bd);border-radius:var(--radius);
-  background:var(--card);color:var(--tx2);font-size:12px;
-  font-family:inherit;appearance:none;cursor:pointer;
-}
-.f-select:focus{outline:none;border-color:var(--sage)}
-.f-select-wrap::after{
-  content:'▾';position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  color:var(--tx3);font-size:10px;pointer-events:none;
-}
-.f-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;min-height:0}
-.f-chip{
-  display:flex;align-items:center;gap:4px;
-  font-size:11px;padding:2px 8px 2px 8px;
-  border-radius:10px;background:var(--sage);color:#fff;
-  cursor:pointer;
-}
-.f-chip .remove{font-size:12px;opacity:.7;margin-left:2px}
-.f-chip .remove:hover{opacity:1}
-.f-clear{font-size:11px;color:var(--sage);cursor:pointer;text-decoration:underline;display:none}
-.f-clear.show{display:inline}
+.fsel:focus{outline:none;border-color:var(--sage)}
+.fsw::after{content:'▾';position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:10px;pointer-events:none}
+.fchips{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:3px}
+.fchip{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:10px;background:var(--sage);color:#fff}
+.fchipx{font-size:13px;opacity:.7;cursor:pointer;line-height:1}
+.fchipx:hover{opacity:1}
+.fclear{font-size:11px;color:var(--sage);cursor:pointer;text-decoration:underline;display:none}
+.fclear.on{display:inline}
 
 /* Tree search */
-#tree-search-wrap{padding:7px 8px 4px;border-bottom:1px solid var(--bd-soft);flex-shrink:0}
-#tree-search{
-  width:100%;padding:5px 8px;border:1px solid var(--bd);
-  border-radius:var(--radius);background:var(--card);
-  color:var(--tx);font-size:12px;font-family:inherit;
-}
-#tree-search:focus{outline:none;border-color:var(--sage)}
-#tree-search::placeholder{color:var(--tx3)}
+#tqw{padding:7px 8px 5px;border-bottom:1px solid var(--bd-soft);flex-shrink:0}
+#tq{width:100%;padding:5px 8px;border:1px solid var(--bd);border-radius:var(--radius);background:var(--card);color:var(--tx);font-size:12px;font-family:inherit}
+#tq:focus{outline:none;border-color:var(--sage)}
+#tq::placeholder{color:var(--tx3)}
 
 /* Tree */
-#tree-wrap{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 0}
-#tree-wrap::-webkit-scrollbar{width:4px}
-#tree-wrap::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+#tw{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 0}
+#tw::-webkit-scrollbar{width:4px}
+#tw::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.tn{
+  display:flex;align-items:flex-start;padding:4px 8px 4px 0;
+  cursor:pointer;border-radius:4px;margin:0 4px 1px;transition:background .12s;
+}
+.tn:hover{background:var(--hover)}
+.tn.sel{background:var(--active)}
+.tn.sel .tlbl{color:var(--tx);font-weight:500}
+.ttog{
+  width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:var(--tx3);font-size:10px;transition:transform .15s;
+  align-self:flex-start;margin-top:4px;
+}
+.ttog.op{transform:rotate(90deg)}
+.ttog.lf{visibility:hidden}
+.tbdg{
+  font-size:9px;padding:1px 5px;border-radius:3px;color:#fff;
+  flex-shrink:0;letter-spacing:.03em;margin-right:5px;
+  align-self:flex-start;margin-top:3px;white-space:nowrap;
+}
+.tbdg.E2E{background:var(--e2e)}.tbdg.Area{background:var(--area)}
+.tbdg.Proc{background:var(--proc)}.tbdg.Scen{background:var(--scen)}
+.tbdg.Sys{background:var(--sysp)}.tbdg.Test{background:var(--test)}
+/* FIX: full text wrap with auto-height */
+.tlbl{
+  font-size:12px;color:var(--tx2);line-height:1.45;flex:1;
+  white-space:normal;word-break:break-word;overflow-wrap:break-word;min-width:0;
+}
+.tlbl.e2e{font-weight:600;color:var(--tx);font-size:12.5px}
+.tlbl.area{font-weight:500;color:var(--tx)}
+.tprod{font-size:9px;color:var(--tx3);background:var(--bd-soft);padding:1px 4px;border-radius:3px;margin-left:3px;flex-shrink:0;align-self:flex-start;margin-top:4px;white-space:nowrap}
+.tch{padding-left:16px;border-left:1px solid var(--bd-soft);margin-left:17px}
+.tnone{font-size:12px;color:var(--tx3);padding:10px 12px;font-style:italic}
 
-.t-node{
-  display:flex;align-items:flex-start;gap:0;
-  padding:4px 8px 4px 0;cursor:pointer;border-radius:4px;
-  margin:0 4px 1px;transition:background .12s;
-  min-height:28px;
-}
-.t-node:hover{background:var(--hover)}
-.t-node.selected{background:var(--active)}
-.t-node.selected .t-label{color:var(--tx);font-weight:500}
-.t-toggle{
-  width:20px;flex-shrink:0;display:flex;align-items:center;
-  justify-content:center;color:var(--tx3);font-size:10px;
-  padding-top:2px;transition:transform .15s;align-self:flex-start;
-  margin-top:3px;
-}
-.t-toggle.open{transform:rotate(90deg)}
-.t-toggle.leaf{opacity:0;pointer-events:none}
-.t-badge{
-  font-size:9px;padding:1px 5px;border-radius:3px;
-  color:#fff;flex-shrink:0;letter-spacing:.03em;
-  margin-right:5px;align-self:flex-start;margin-top:3px;
-  white-space:nowrap;font-family:'Source Serif 4',serif;
-}
-.t-badge.E2E{background:var(--e2e)}
-.t-badge.Area{background:var(--area)}
-.t-badge.Proc{background:var(--proc)}
-.t-badge.Scen{background:var(--scen)}
-.t-badge.Sys{background:var(--sysp)}
-.t-badge.Test{background:var(--test)}
-.t-label{
-  font-size:12px;color:var(--tx2);line-height:1.4;
-  flex:1;word-break:break-word;
-}
-.t-label.e2e{font-weight:500;color:var(--tx);font-size:12.5px}
-.t-label.area{font-weight:500;color:var(--tx)}
-.t-prod{
-  font-size:9px;color:var(--tx3);background:var(--bd-soft);
-  padding:1px 4px;border-radius:3px;margin-left:4px;
-  flex-shrink:0;align-self:flex-start;margin-top:4px;
-  white-space:nowrap;
-}
-.t-children{padding-left:16px;border-left:1px solid var(--bd-soft);margin-left:17px}
-.t-no-match{font-size:12px;color:var(--tx3);padding:8px 12px;font-style:italic}
-.t-count{font-size:10px;color:var(--tx3);padding:4px 12px}
+/* ─── Center ─────────────────────────── */
+#ctr{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
 
-/* ── Center Canvas ───────────────────────────────────────────────── */
-#center{
-  flex:1;min-width:0;display:flex;flex-direction:column;
-  background:var(--bg);overflow:hidden;
+#empty{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
 }
+.etitle{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--tx2)}
+.esub{font-size:13px;color:var(--tx3);text-align:center;max-width:340px;line-height:1.65}
+.ehint{
+  display:flex;align-items:center;gap:8px;padding:8px 16px;
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--radius);
+  font-size:12px;color:var(--tx2);cursor:pointer;transition:border-color .15s;
+}
+.ehint:hover{border-color:var(--sage);color:var(--sage)}
 
-/* Empty state */
-#empty-state{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:12px;color:var(--tx3);
-}
-.empty-icon{font-size:40px;opacity:.3}
-.empty-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--tx2)}
-.empty-sub{font-size:13px;text-align:center;max-width:320px;line-height:1.6}
+#nhdr{padding:12px 18px 10px;border-bottom:1px solid var(--bd-soft);flex-shrink:0;background:var(--bg)}
+.nhmeta{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap}
+.nhpill{font-size:10px;padding:2px 9px;border-radius:10px;color:#fff;letter-spacing:.04em}
+.nhpill.End-to-end{background:var(--e2e)}.nhpill.Process-area{background:var(--area)}
+.nhpill.Process{background:var(--proc)}.nhpill.Scenario{background:var(--scen)}
+.nhpill.System-process{background:var(--sysp)}.nhpill.Test-case{background:var(--test)}
+.nhseq{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3)}
+.nhtitle{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;line-height:1.25;color:var(--tx);margin-bottom:8px}
+.nhtags{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.nhtag{font-size:11px;padding:2px 9px;border-radius:10px;border:1px solid var(--bd);color:var(--tx2);background:var(--card);cursor:pointer;transition:border-color .12s}
+.nhtag:hover{border-color:var(--sage);color:var(--sage)}
+.nhtag.af{background:var(--sage-bg);border-color:var(--sage);color:var(--e2e)}
+.nhstat{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--warm-bg);color:var(--warm);border:1px solid #D9C09A}
 
-/* Node header */
-#node-header{
-  padding:14px 18px 10px;
-  border-bottom:1px solid var(--bd-soft);
-  flex-shrink:0;background:var(--bg);
-}
-.nh-path{
-  display:flex;align-items:center;gap:6px;
-  margin-bottom:8px;flex-wrap:wrap;
-}
-.nh-type{
-  font-size:10px;padding:2px 8px;border-radius:10px;
-  color:#fff;letter-spacing:.04em;font-family:'Source Serif 4',serif;
-}
-.nh-type.End-to-end{background:var(--e2e)}
-.nh-type.Process-area{background:var(--area)}
-.nh-type.Process{background:var(--proc)}
-.nh-type.Scenario{background:var(--scen)}
-.nh-type.System-process{background:var(--sysp)}
-.nh-type.Test-case{background:var(--test)}
-.nh-seq{
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3);
-}
-.nh-title{
-  font-family:'Cormorant Garamond',Georgia,serif;
-  font-size:22px;font-weight:500;line-height:1.25;
-  color:var(--tx);margin-bottom:8px;
-}
-.nh-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.nh-tag{
-  font-size:11px;padding:2px 9px;border-radius:10px;
-  border:1px solid var(--bd);color:var(--tx2);background:var(--card);
-  cursor:pointer;
-}
-.nh-tag:hover{border-color:var(--sage);color:var(--sage)}
-.nh-tag.app{background:var(--sage-bg);border-color:var(--sage);color:var(--sage)}
-.nh-stat{
-  font-size:10px;padding:2px 8px;border-radius:10px;
-  background:var(--warm-bg);color:var(--warm);border:1px solid #D4B892;
-}
+#tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--bd);padding:0 18px;flex-shrink:0;overflow-x:auto}
+#tabs::-webkit-scrollbar{display:none}
+.tab{font-size:12px;padding:8px 11px 7px;color:var(--tx2);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .12s}
+.tab:hover:not(.act){color:var(--tx)}
+.tab.act{color:var(--tx);border-bottom-color:var(--sage)}
+.tab.hid{display:none}
 
-/* Tabs */
-#tabs{
-  display:flex;background:var(--panel);
-  border-bottom:1px solid var(--bd);padding:0 18px;
-  flex-shrink:0;
-}
-.tab{
-  font-size:12px;padding:8px 10px 7px;color:var(--tx2);
-  cursor:pointer;border-bottom:2px solid transparent;
-  margin-bottom:-1px;white-space:nowrap;transition:color .12s;
-  font-family:'Source Serif 4',serif;
-}
-.tab:hover:not(.active){color:var(--tx)}
-.tab.active{color:var(--tx);border-bottom-color:var(--sage)}
-.tab.hidden{display:none}
+#cb{flex:1;overflow-y:auto;padding:16px 18px}
+#cb::-webkit-scrollbar{width:5px}
+#cb::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.tp{display:none}.tp.act{display:block}
 
-/* Content body */
-#content-body{
-  flex:1;overflow-y:auto;padding:16px 18px;
-}
-#content-body::-webkit-scrollbar{width:5px}
-#content-body::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.slbl{font-size:10px;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;font-weight:500}
+.prose{font-size:14px;color:var(--tx2);line-height:1.72;margin-bottom:14px}
+.callout{background:var(--card);border:1px solid var(--bd);border-left:3px solid var(--warm);border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;margin-bottom:16px}
+.callout.sg{border-left-color:var(--sage)}
+.callout.ar{border-left-color:var(--area)}
+.clbl{font-size:10px;color:var(--warm);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;font-weight:500}
+.callout.sg .clbl{color:var(--sage)}.callout.ar .clbl{color:var(--area)}
+.ctxt{font-size:13px;color:var(--tx2);line-height:1.6}
+.dtbl{border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.drow{display:grid;grid-template-columns:120px 1fr;border-bottom:1px solid var(--bd-soft)}
+.drow:last-child{border-bottom:none}
+.dk{font-size:12px;color:var(--tx3);padding:8px 12px;background:var(--panel);border-right:1px solid var(--bd-soft);font-weight:500}
+.dv{font-size:12px;color:var(--tx);padding:8px 12px;font-family:'JetBrains Mono',monospace;word-break:break-all;line-height:1.5}
+.dv.p{font-family:'Source Serif 4',serif;font-size:13px;word-break:normal;margin-bottom:0}
+.pgrid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.pchip{font-size:12px;padding:4px 12px;border-radius:10px;border:1px solid var(--bd);color:var(--tx2);background:var(--card)}
+.pchip.hit{background:var(--sage-bg);border-color:var(--sage);color:var(--e2e)}
+.rlink{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border:1px solid var(--bd);border-radius:var(--radius);margin-bottom:6px;text-decoration:none;color:var(--sage);font-size:13px;transition:border-color .12s;word-break:break-all}
+.rlink:hover{border-color:var(--sage)}
+.aqcard{background:var(--card);border:1px solid var(--bd);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.aqid{font-family:'JetBrains Mono',monospace;font-size:28px;color:var(--warm);line-height:1;flex-shrink:0}
+.aqttl{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:4px}
+.aqtxt{font-size:13px;color:var(--tx2);line-height:1.6}
+.tccard{background:var(--card);border:1px solid var(--bd);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.tcbdg{font-size:10px;padding:2px 7px;border-radius:10px;color:#fff;display:inline-block;margin-bottom:6px}
+.tctitle{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:4px}
+.tcseq{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3)}
+.epanel{font-size:13px;color:var(--tx3);font-style:italic;padding:20px 0;text-align:center}
 
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+/* ─── Flow Diagram ────────────────────── */
+.flow-wrap{padding:0}
+.flow-summary{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--radius);
+  margin-bottom:12px;font-size:12px;color:var(--tx2);flex-wrap:wrap;
+}
+.flow-spill{font-size:11px;padding:2px 9px;border-radius:10px;color:#fff}
+.flow-canvas{display:flex;flex-direction:column;gap:0}
+.flow-row{display:flex;align-items:stretch;flex-wrap:nowrap;gap:0;overflow-x:auto;padding-bottom:4px}
+.flow-row::-webkit-scrollbar{height:3px}
+.flow-row::-webkit-scrollbar-thumb{background:var(--bd)}
+.fcard{
+  flex:0 0 auto;width:160px;min-height:80px;
+  background:var(--card);
+  border:1.5px solid var(--ca,var(--bd));
+  border-top:4px solid var(--ca,var(--bd));
+  border-radius:var(--radius);padding:10px 10px 8px;
+  cursor:pointer;transition:all .15s;
+  display:flex;flex-direction:column;gap:3px;
+}
+.fcard:hover{background:var(--hover);box-shadow:0 4px 14px rgba(44,40,32,.11);transform:translateY(-2px)}
+.fcard-type{font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ca,var(--sage))}
+.fcard-title{font-size:11.5px;color:var(--tx);line-height:1.4;flex:1;word-break:break-word}
+.fcard-seq{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);margin-top:2px}
+.fcard-count{font-size:10px;color:var(--tx3)}
+.farr{display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0;align-self:center}
+.fdarr{display:flex;justify-content:center;height:34px}
+.fdinner{display:flex;align-items:center;justify-content:center;width:160px}
+.flow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
 
-/* Content elements */
-.sec-label{
-  font-size:10px;color:var(--tx3);letter-spacing:.08em;
-  text-transform:uppercase;margin-bottom:8px;font-weight:500;
-  font-family:'Source Serif 4',serif;
-}
-.sec-gap{margin-bottom:20px}
-.prose{
-  font-size:14px;color:var(--tx2);line-height:1.7;margin-bottom:14px;
-}
-.callout{
-  background:var(--card);border:1px solid var(--bd);
-  border-left:3px solid var(--warm);
-  border-radius:0 var(--radius) var(--radius) 0;
-  padding:10px 14px;margin-bottom:16px;
-}
-.callout.sage{border-left-color:var(--sage)}
-.callout-label{
-  font-size:10px;color:var(--warm);letter-spacing:.06em;
-  text-transform:uppercase;margin-bottom:5px;font-weight:500;
-}
-.callout.sage .callout-label{color:var(--sage)}
-.callout-text{font-size:13px;color:var(--tx2);line-height:1.6}
-.prod-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-.prod-chip{
-  font-size:12px;padding:4px 11px;border-radius:10px;
-  border:1px solid var(--bd);color:var(--tx2);background:var(--card);
-}
-.prod-chip.match{
-  background:var(--sage-bg);border-color:var(--sage);color:var(--e2e);
-}
-.def-list{margin-bottom:16px;border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden}
-.def-row{
-  display:grid;grid-template-columns:120px 1fr;
-  border-bottom:1px solid var(--bd-soft);
-}
-.def-row:last-child{border-bottom:none}
-.def-k{
-  font-size:12px;color:var(--tx3);padding:9px 12px;
-  background:var(--panel);border-right:1px solid var(--bd-soft);
-  font-weight:500;
-}
-.def-v{
-  font-size:12px;color:var(--tx);padding:9px 12px;
-  font-family:'JetBrains Mono',monospace;word-break:break-all;
-  line-height:1.5;
-}
-.def-v.prose-val{font-family:'Source Serif 4',serif;font-size:13px;word-break:normal}
-.apqc-block{
-  background:var(--card);border:1px solid var(--bd);
-  border-radius:var(--radius);padding:14px 16px;
-  display:flex;align-items:flex-start;gap:14px;
-  margin-bottom:16px;
-}
-.apqc-id{
-  font-family:'JetBrains Mono',monospace;
-  font-size:26px;color:var(--warm);line-height:1;
-  flex-shrink:0;
-}
-.apqc-title{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:4px}
-.apqc-text{font-size:13px;color:var(--tx2);line-height:1.6}
-.ref-link{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 12px;background:var(--card);
-  border:1px solid var(--bd);border-radius:var(--radius);
-  margin-bottom:6px;text-decoration:none;color:var(--sage);
-  font-size:13px;transition:border-color .12s;word-break:break-all;
-}
-.ref-link:hover{border-color:var(--sage)}
-.ref-icon{flex-shrink:0;font-size:14px}
-.tc-card{
-  background:var(--card);border:1px solid var(--bd);
-  border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;
-}
-.tc-badge{
-  font-size:10px;padding:2px 7px;border-radius:10px;
-  background:var(--test);color:#fff;display:inline-block;
-  margin-bottom:6px;
-}
-.tc-title{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:4px}
-.tc-desc{font-size:12px;color:var(--tx2);line-height:1.6}
-.empty-content{
-  font-size:13px;color:var(--tx3);font-style:italic;
-  padding:20px 0;text-align:center;
-}
-
-/* ── Right Rail ──────────────────────────────────────────────────── */
+/* ─── Right Rail ─────────────────────── */
 #right{
-  width:220px;flex-shrink:0;
-  background:var(--panel);border-left:1px solid var(--bd);
-  display:flex;flex-direction:column;overflow-y:auto;
-  padding:12px 10px;gap:16px;
+  width:228px;flex-shrink:0;background:var(--panel);
+  border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;
 }
-#right::-webkit-scrollbar{width:3px}
-#right::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
-.rail-title{
-  font-size:10px;color:var(--tx3);letter-spacing:.07em;
-  text-transform:uppercase;margin-bottom:8px;font-weight:500;
-}
-.flow-track{position:relative;padding-left:18px}
-.flow-line{
-  position:absolute;left:7px;top:6px;bottom:6px;
-  width:1px;background:var(--bd);
-}
-.flow-item{
-  position:relative;margin-bottom:8px;cursor:pointer;
-}
-.flow-dot{
-  position:absolute;left:-12px;top:4px;
-  width:9px;height:9px;border-radius:50%;background:var(--bd);z-index:1;
-}
-.flow-dot.current{background:var(--sage);box-shadow:0 0 0 3px var(--sage-bg)}
-.flow-dot.adjacent{background:var(--warm)}
-.flow-text{font-size:11px;color:var(--tx3);line-height:1.4}
-.flow-text.current{color:var(--tx);font-weight:500}
-.flow-text.adjacent{color:var(--tx2)}
-.flow-item:hover .flow-text{color:var(--sage)}
-.related-card{
-  background:var(--card);border:1px solid var(--bd);
-  border-radius:5px;padding:8px 9px;margin-bottom:6px;
-  cursor:pointer;transition:border-color .12s;
-}
-.related-card:hover{border-color:var(--sage)}
-.related-prod{font-size:10px;color:var(--tx3);margin-bottom:3px}
-.related-title{font-size:11px;color:var(--tx2);line-height:1.35}
-.doc-link{
+.rhdr{padding:10px 12px 8px;border-bottom:1px solid var(--bd-soft);flex-shrink:0}
+.rhdr-lbl{font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;font-weight:500;margin-bottom:2px}
+.rhdr-sub{font-size:12px;color:var(--tx2);font-weight:500}
+#rclist{flex:1;overflow-y:auto;padding:5px 0}
+#rclist::-webkit-scrollbar{width:3px}
+#rclist::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.ri{
   display:flex;align-items:flex-start;gap:6px;
-  padding:5px 0;border-bottom:1px solid var(--bd-soft);
-  cursor:pointer;text-decoration:none;
+  padding:6px 10px;cursor:pointer;border-radius:4px;
+  margin:0 4px 1px;transition:background .12s;
 }
-.doc-link:last-child{border-bottom:none}
-.doc-icon{color:var(--sage);font-size:11px;flex-shrink:0;margin-top:1px}
-.doc-title{font-size:11px;color:var(--sage);line-height:1.4}
-.doc-title:hover{text-decoration:underline}
-.rail-empty{font-size:11px;color:var(--tx3);font-style:italic}
+.ri:hover{background:var(--hover)}
+.ri:hover .ri-t{color:var(--sage)}
+.ri-b{font-size:9px;padding:1px 5px;border-radius:3px;color:#fff;flex-shrink:0;margin-top:2px}
+.ri-b.E2E{background:var(--e2e)}.ri-b.Area{background:var(--area)}
+.ri-b.Proc{background:var(--proc)}.ri-b.Scen{background:var(--scen)}
+.ri-b.Sys{background:var(--sysp)}.ri-b.Test{background:var(--test)}
+.ri-t{font-size:12px;color:var(--tx2);line-height:1.4;word-break:break-word}
+.ri-c{font-size:10px;color:var(--tx3)}
+.rdocs{border-top:1px solid var(--bd);padding:10px 12px;flex-shrink:0}
+.rdocs-t{font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;font-weight:500;margin-bottom:8px}
+.rdlink{display:flex;align-items:flex-start;gap:5px;padding:4px 0;border-bottom:1px solid var(--bd-soft);text-decoration:none}
+.rdlink:last-child{border-bottom:none}
+.rdlink-t{font-size:11px;color:var(--sage);line-height:1.4}
+.rdlink-t:hover{text-decoration:underline}
+.rempty{font-size:12px;color:var(--tx3);font-style:italic;padding:10px 12px}
 
-/* ── Search Overlay ──────────────────────────────────────────────── */
-#search-overlay{
-  position:fixed;inset:0;z-index:1000;
-  background:rgba(44,40,32,.45);
-  display:none;align-items:flex-start;justify-content:center;
-  padding-top:80px;
-}
-#search-overlay.open{display:flex}
-#search-box{
-  width:600px;max-width:90vw;
-  background:var(--card);border:1px solid var(--bd);
-  border-radius:10px;box-shadow:0 8px 32px rgba(44,40,32,.18);
-  overflow:hidden;
-}
-#search-input-wrap{
-  display:flex;align-items:center;gap:10px;
-  padding:12px 16px;border-bottom:1px solid var(--bd);
-}
-.search-icon{color:var(--tx3);font-size:16px;flex-shrink:0}
-#search-input{
-  flex:1;border:none;outline:none;background:transparent;
-  font-size:15px;color:var(--tx);font-family:'Source Serif 4',serif;
-}
-#search-input::placeholder{color:var(--tx3)}
-#search-esc{font-size:10px;color:var(--tx3);cursor:pointer}
-#search-results{max-height:420px;overflow-y:auto}
-#search-results::-webkit-scrollbar{width:4px}
-#search-results::-webkit-scrollbar-thumb{background:var(--bd)}
-.sr-group-label{
-  font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;
-  padding:8px 16px 4px;font-weight:500;
-}
-.sr-item{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:9px 16px;cursor:pointer;border-bottom:1px solid var(--bd-soft);
-  transition:background .1s;
-}
-.sr-item:last-child{border-bottom:none}
-.sr-item:hover,.sr-item.focused{background:var(--hover)}
-.sr-badge{
-  font-size:9px;padding:2px 6px;border-radius:3px;color:#fff;
-  flex-shrink:0;margin-top:2px;
-}
-.sr-badge.E2E{background:var(--e2e)}
-.sr-badge.Area{background:var(--area)}
-.sr-badge.Proc{background:var(--proc)}
-.sr-badge.Scen{background:var(--scen)}
-.sr-badge.Sys{background:var(--sysp)}
-.sr-badge.Test{background:var(--test)}
-.sr-title{font-size:13px;color:var(--tx);line-height:1.3;margin-bottom:2px}
-.sr-path{font-size:11px;color:var(--tx3);line-height:1.3}
-.sr-empty{padding:20px 16px;text-align:center;color:var(--tx3);font-size:13px;font-style:italic}
-.sr-hint{padding:8px 16px;font-size:11px;color:var(--tx3);border-top:1px solid var(--bd)}
+/* ─── Search Overlay ─────────────────── */
+#sov{position:fixed;inset:0;z-index:500;background:rgba(44,40,32,.4);display:none;align-items:flex-start;justify-content:center;padding-top:70px}
+#sov.on{display:flex}
+#sbox{width:620px;max-width:92vw;background:var(--card);border:1px solid var(--bd);border-radius:10px;box-shadow:0 8px 30px rgba(44,40,32,.18);overflow:hidden}
+#sinrow{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--bd)}
+#sin{flex:1;border:none;outline:none;background:transparent;font-size:15px;color:var(--tx);font-family:'Source Serif 4',serif}
+#sin::placeholder{color:var(--tx3)}
+#sres{max-height:420px;overflow-y:auto}
+#sres::-webkit-scrollbar{width:4px}
+#sres::-webkit-scrollbar-thumb{background:var(--bd)}
+.sglbl{font-size:10px;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;padding:8px 16px 4px;font-weight:500}
+.sri{display:flex;align-items:flex-start;gap:10px;padding:9px 16px;cursor:pointer;border-bottom:1px solid var(--bd-soft);transition:background .1s}
+.sri:hover{background:var(--hover)}
+.srbdg{font-size:9px;padding:2px 6px;border-radius:3px;color:#fff;flex-shrink:0;margin-top:2px}
+.srbdg.E2E{background:var(--e2e)}.srbdg.Area{background:var(--area)}
+.srbdg.Proc{background:var(--proc)}.srbdg.Scen{background:var(--scen)}
+.srbdg.Sys{background:var(--sysp)}.srbdg.Test{background:var(--test)}
+.srt{font-size:13px;color:var(--tx);margin-bottom:2px;line-height:1.3}
+.srp{font-size:11px;color:var(--tx3);line-height:1.3}
+.shint{padding:8px 16px;font-size:11px;color:var(--tx3)}
+.sempty{padding:20px 16px;text-align:center;color:var(--tx3);font-size:13px;font-style:italic}
 mark{background:transparent;color:var(--sage);font-weight:500}
 
-/* ── Loading ─────────────────────────────────────────────────────── */
-#loading{
-  position:fixed;inset:0;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:16px;z-index:9999;transition:opacity .4s;
-}
-#loading.hidden{opacity:0;pointer-events:none}
-.loading-wordmark{
-  font-family:'Cormorant Garamond',serif;font-size:32px;
-  font-weight:500;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--tx);
-}
-.loading-wordmark span{color:var(--sage)}
-.loading-bar{
-  width:200px;height:2px;background:var(--bd);border-radius:1px;overflow:hidden;
-}
-.loading-fill{
-  height:100%;background:var(--sage);border-radius:1px;
-  animation:loadpulse 1.2s ease-in-out infinite;
-}
-@keyframes loadpulse{0%{width:0}60%{width:80%}100%{width:100%}}
-.loading-sub{font-size:12px;color:var(--tx3)}
+/* ─── About Modal ────────────────────── */
+#aov{position:fixed;inset:0;z-index:600;background:rgba(44,40,32,.5);display:none;align-items:center;justify-content:center;padding:20px}
+#aov.on{display:flex}
+#amod{width:680px;max-width:95vw;max-height:90vh;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:0 12px 40px rgba(44,40,32,.2);overflow-y:auto;display:flex;flex-direction:column}
+#amod::-webkit-scrollbar{width:5px}
+#amod::-webkit-scrollbar-thumb{background:var(--bd)}
+.amhdr{padding:20px 24px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:var(--panel);border-radius:12px 12px 0 0}
+.amlogo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--tx)}
+.amlogo em{color:var(--sage);font-style:normal}
+.amsub{font-size:13px;color:var(--tx2);margin-top:2px}
+.amx{font-size:20px;color:var(--tx3);cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1}
+.amx:hover{background:var(--hover);color:var(--tx)}
+.ambody{padding:24px}
+.amsect{margin-bottom:24px}
+.amsect-t{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--tx);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd-soft)}
+.amtxt{font-size:14px;color:var(--tx2);line-height:1.7;margin-bottom:10px}
+.amlink{color:var(--sage);text-decoration:underline}
+.amlink:hover{color:var(--e2e)}
+.amstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.amstat{background:var(--panel);border:1px solid var(--bd);border-radius:var(--radius);padding:12px 14px;text-align:center}
+.amstat-n{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--e2e)}
+.amstat-l{font-size:11px;color:var(--tx3);margin-top:2px}
+.amdiscl{background:var(--warm-bg);border:1px solid #D9C09A;border-radius:var(--radius);padding:14px 16px}
+.amdiscl-t{font-size:11px;font-weight:600;color:var(--warm);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.amdiscl-x{font-size:13px;color:var(--tx2);line-height:1.6}
+.amfooter{padding:14px 24px;border-top:1px solid var(--bd);background:var(--panel);border-radius:0 0 12px 12px;display:flex;align-items:center;justify-content:space-between}
+.amft{font-size:12px;color:var(--tx3)}
+.amcbtn{padding:7px 18px;background:var(--sage);color:#fff;border-radius:var(--radius);font-size:13px;cursor:pointer;transition:opacity .15s;border:none}
+.amcbtn:hover{opacity:.85}
 
-/* ── Responsive ──────────────────────────────────────────────────── */
-@media(max-width:900px){
-  #right{display:none}
-  #left{width:220px}
-}
-@media(max-width:640px){
-  #left{position:absolute;z-index:50;height:100%;transform:translateX(-100%);transition:transform .25s}
-  #left.open{transform:translateX(0)}
-  #center{flex:1}
-}
+/* ─── Loading ────────────────────────── */
+#ld{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .5s}
+#ld.fade{opacity:0;pointer-events:none}
+.ldmark{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--tx)}
+.ldmark em{color:var(--sage);font-style:normal}
+.ldbar{width:220px;height:2px;background:var(--bd);border-radius:1px;overflow:hidden}
+.ldfill{height:100%;background:var(--sage);border-radius:1px;animation:ldp 1.4s ease-in-out infinite}
+@keyframes ldp{0%{width:0}70%{width:85%}100%{width:100%}}
+.ldsub{font-size:12px;color:var(--tx3)}
+
+@media(max-width:1100px){#right{display:none}}
+@media(max-width:720px){#left{width:220px}}
 </style>
 </head>
 <body>
 
-<!-- Loading screen -->
-<div id="loading">
-  <div class="loading-wordmark">Atl<span>a</span>s</div>
-  <div class="loading-bar"><div class="loading-fill"></div></div>
-  <div class="loading-sub">Loading 5,873 process nodes…</div>
+<div id="ld">
+  <div class="ldmark">Atl<em>a</em>s</div>
+  <div class="ldbar"><div class="ldfill"></div></div>
+  <div class="ldsub">Building 5,873 process nodes…</div>
 </div>
 
-<!-- App shell -->
 <div id="app" style="display:none">
-
-  <!-- Header -->
-  <div id="header">
-    <div class="wordmark">Atl<span>a</span>s</div>
-    <div class="h-sep">·</div>
-    <div id="breadcrumb">
-      <span class="bc-item" style="color:var(--tx3);cursor:default">Select a process to begin</span>
-    </div>
-    <span id="node-count"></span>
-    <button id="search-btn" onclick="openSearch()" aria-label="Open search">
+  <div id="hdr">
+    <a class="logo" href="#" onclick="resetView();return false">Atl<em>a</em>s</a>
+    <div class="hdiv"></div>
+    <div id="bc"><span style="font-size:12px;color:var(--tx3)">D365 Process Navigator</span></div>
+    <div id="nc"></div>
+    <button class="hbtn" onclick="openSearch()">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Search
-      <span class="kbd">⌘K</span>
+      Search <span class="kbd">⌘K</span>
+    </button>
+    <button class="hbtn about-btn" onclick="openAbout()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About
     </button>
   </div>
 
-  <!-- Body -->
   <div id="body">
-
-    <!-- Left: filters + tree -->
     <div id="left">
       <div id="filters">
-        <div class="f-label">Application Family</div>
-        <div class="f-select-wrap">
-          <select class="f-select" id="family-select" onchange="addFilter('family',this.value);this.value=''">
+        <div class="fl">Application Family</div>
+        <div class="fsw">
+          <select class="fsel" id="fsel-fam" onchange="addF('fam',this.value);this.value=''">
             <option value="">All families…</option>
           </select>
         </div>
-        <div id="family-chips" class="f-chips"></div>
-        <div class="f-label" style="margin-top:6px">Product</div>
-        <div class="f-select-wrap">
-          <select class="f-select" id="product-select" onchange="addFilter('product',this.value);this.value=''">
+        <div id="fchips-fam" class="fchips"></div>
+        <div class="fl" style="margin-top:7px">Product</div>
+        <div class="fsw">
+          <select class="fsel" id="fsel-prod" onchange="addF('prod',this.value);this.value=''">
             <option value="">All products…</option>
           </select>
         </div>
-        <div id="product-chips" class="f-chips"></div>
-        <span class="f-clear" id="clear-filters" onclick="clearAllFilters()">Clear all filters</span>
+        <div id="fchips-prod" class="fchips"></div>
+        <span class="fclear" id="fclear" onclick="clearF()">Clear all filters</span>
       </div>
-
-      <div id="tree-search-wrap">
-        <input id="tree-search" type="text" placeholder="Filter tree…" 
-          autocomplete="off" spellcheck="false"
-          oninput="filterTree(this.value)">
+      <div id="tqw">
+        <input id="tq" type="text" placeholder="Filter tree…" autocomplete="off" oninput="filterTree(this.value)">
       </div>
-
-      <div id="tree-wrap">
-        <div id="tree-root"></div>
-      </div>
+      <div id="tw"><div id="troot"></div></div>
     </div>
 
-    <!-- Center: content -->
-    <div id="center">
-
-      <!-- Empty state -->
-      <div id="empty-state">
-        <div class="empty-icon">
-          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" opacity=".35"><path d="M3 7c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M3 7l9 6 9-6"/></svg>
+    <div id="ctr">
+      <div id="empty">
+        <svg opacity=".25" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <div class="etitle">D365 Process Navigator</div>
+        <div class="esub">Select any process in the tree to explore business process hierarchies, flow diagrams, D365 coverage, and APQC alignment.</div>
+        <div class="ehint" onclick="openSearch()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Search all 5,873 process nodes <span class="kbd">⌘K</span>
         </div>
-        <div class="empty-title">D365 Process Navigator</div>
-        <div class="empty-sub">Select any node in the process tree to explore business processes, D365 support, APQC alignment, and test cases.</div>
       </div>
 
-      <!-- Node header (hidden until selection) -->
-      <div id="node-header" style="display:none">
-        <div class="nh-path">
-          <span class="nh-type" id="nh-type-badge">Scenario</span>
-          <span class="bc-sep">·</span>
-          <span class="nh-seq" id="nh-seq">10.05.010.100</span>
+      <div id="nhdr" style="display:none">
+        <div class="nhmeta">
+          <span class="nhpill" id="nhpill"></span>
+          <span style="color:var(--bd);font-size:11px">·</span>
+          <span class="nhseq" id="nhseq"></span>
         </div>
-        <div class="nh-title" id="nh-title">Node title</div>
-        <div class="nh-tags" id="nh-tags"></div>
+        <div class="nhtitle" id="nhtitle"></div>
+        <div class="nhtags" id="nhtags"></div>
       </div>
 
-      <!-- Tabs -->
       <div id="tabs" style="display:none">
-        <div class="tab active" data-tab="overview" onclick="switchTab('overview')">Overview</div>
-        <div class="tab" data-tab="d365" onclick="switchTab('d365')">D365 Support</div>
-        <div class="tab" data-tab="system" onclick="switchTab('system')">System Details</div>
-        <div class="tab hidden" data-tab="testcases" onclick="switchTab('testcases')">Test Cases</div>
-        <div class="tab" data-tab="apqc" onclick="switchTab('apqc')">APQC Context</div>
+        <div class="tab act" data-t="flow"      onclick="switchTab('flow')">Process Flow</div>
+        <div class="tab"     data-t="overview"  onclick="switchTab('overview')">Overview</div>
+        <div class="tab"     data-t="d365"      onclick="switchTab('d365')">D365 Support</div>
+        <div class="tab"     data-t="system"    onclick="switchTab('system')">System Details</div>
+        <div class="tab hid" data-t="testcases" onclick="switchTab('testcases')">Test Cases</div>
+        <div class="tab"     data-t="apqc"      onclick="switchTab('apqc')">APQC Context</div>
       </div>
 
-      <!-- Content body -->
-      <div id="content-body" style="display:none">
-        <div id="panel-overview" class="tab-panel active"></div>
-        <div id="panel-d365" class="tab-panel"></div>
-        <div id="panel-system" class="tab-panel"></div>
-        <div id="panel-testcases" class="tab-panel"></div>
-        <div id="panel-apqc" class="tab-panel"></div>
+      <div id="cb" style="display:none">
+        <div id="p-flow"      class="tp act"></div>
+        <div id="p-overview"  class="tp"></div>
+        <div id="p-d365"      class="tp"></div>
+        <div id="p-system"    class="tp"></div>
+        <div id="p-testcases" class="tp"></div>
+        <div id="p-apqc"      class="tp"></div>
       </div>
-
     </div>
 
-    <!-- Right rail -->
     <div id="right">
-      <div class="rail-section">
-        <div class="rail-title">In the flow</div>
-        <div id="rail-flow"><span class="rail-empty">Select a node</span></div>
+      <div class="rhdr">
+        <div class="rhdr-lbl" id="rlbl">Next level</div>
+        <div class="rhdr-sub" id="rsub">—</div>
       </div>
-      <div class="rail-section">
-        <div class="rail-title">Same process, other products</div>
-        <div id="rail-related"><span class="rail-empty">—</span></div>
-      </div>
-      <div class="rail-section">
-        <div class="rail-title">Documentation</div>
-        <div id="rail-docs"><span class="rail-empty">—</span></div>
+      <div id="rclist"></div>
+      <div class="rdocs" id="rdocs" style="display:none">
+        <div class="rdocs-t">Documentation</div>
+        <div id="rdocslist"></div>
       </div>
     </div>
-
-  </div><!-- /body -->
-</div><!-- /app -->
+  </div>
+</div>
 
 <!-- Search overlay -->
-<div id="search-overlay" onclick="if(event.target===this)closeSearch()">
-  <div id="search-box">
-    <div id="search-input-wrap">
-      <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input id="search-input" type="text" placeholder="Search processes, scenarios, APQC IDs…"
-        autocomplete="off" spellcheck="false" oninput="doSearch(this.value)">
-      <span class="kbd search-esc" onclick="closeSearch()">Esc</span>
+<div id="sov" onclick="if(event.target===this)closeSearch()">
+  <div id="sbox">
+    <div id="sinrow">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="sin" type="text" placeholder="Search processes, scenarios, APQC IDs, modules…" autocomplete="off" oninput="doSearch(this.value)">
+      <span class="kbd" onclick="closeSearch()" style="cursor:pointer">Esc</span>
     </div>
-    <div id="search-results">
-      <div class="sr-hint">Search across all 5,873 nodes — titles, descriptions, APQC IDs, modules</div>
+    <div id="sres"><div class="shint">Search across all 5,873 nodes — titles, descriptions, APQC IDs, modules, products</div></div>
+  </div>
+</div>
+
+<!-- About modal -->
+<div id="aov" onclick="if(event.target===this)closeAbout()">
+  <div id="amod">
+    <div class="amhdr">
+      <div>
+        <div class="amlogo">Atl<em>a</em>s</div>
+        <div class="amsub">D365 Business Process Catalog Navigator</div>
+      </div>
+      <span class="amx" onclick="closeAbout()">×</span>
+    </div>
+    <div class="ambody">
+      <div class="amsect">
+        <div class="amsect-t">About this application</div>
+        <p class="amtxt">Atlas is a web-based knowledge and learning tool for Dynamics 365 Finance &amp; Operations functional consultants. It transforms the <strong>Microsoft Business Process Catalog</strong> into a navigable, hierarchical, end-to-end view of business processes — with drill-down flow diagrams, D365 product coverage mapping, APQC industry framework alignment, and full system-level traceability.</p>
+        <div class="amstats">
+          <div class="amstat"><div class="amstat-n">15</div><div class="amstat-l">End-to-End Processes</div></div>
+          <div class="amstat"><div class="amstat-n">5,873</div><div class="amstat-l">Total Process Nodes</div></div>
+          <div class="amstat"><div class="amstat-n">22</div><div class="amstat-l">D365 Products Covered</div></div>
+        </div>
+      </div>
+      <div class="amsect">
+        <div class="amsect-t">Data source — Microsoft Business Process Catalog</div>
+        <p class="amtxt">All process data is sourced exclusively from the <strong>Microsoft Business Process Catalog (BPC)</strong> — Microsoft's official taxonomy of business processes and how Dynamics 365 applications support them. The catalog covers the full hierarchy: End-to-End Process → Process Area → Process → Scenario → System Process → Test Case.</p>
+        <p class="amtxt">Official documentation:
+          <a class="amlink" href="https://learn.microsoft.com/en-us/dynamics365/guidance/business-processes/overview" target="_blank" rel="noopener">
+            Microsoft Business Process Catalog — learn.microsoft.com
+          </a>
+        </p>
+      </div>
+      <div class="amsect">
+        <div class="amsect-t">How to use Atlas</div>
+        <p class="amtxt">Navigate the tree on the left to explore all 15 end-to-end process families. Click any node to open its content. The <strong>Process Flow</strong> tab (first tab) shows a drill-down visual diagram of all child nodes at that level. Use the <strong>Application Family</strong> and <strong>Product</strong> filters to reshape the tree to your project scope. Press <strong>⌘K</strong> (Mac) or <strong>Ctrl+K</strong> (Windows) to search across all 5,873 nodes.</p>
+      </div>
+      <div class="amdiscl">
+        <div class="amdiscl-t">Educational use disclaimer</div>
+        <div class="amdiscl-x">This application is created solely for educational purposes to help users understand and navigate the Microsoft Business Process Catalog. All data is sourced from official Microsoft documentation. This tool is not affiliated with, endorsed by, or representative of Microsoft Corporation. Dynamics 365 and the Business Process Catalog are trademarks of Microsoft Corporation.</div>
+      </div>
+    </div>
+    <div class="amfooter">
+      <div class="amft">Built on Microsoft Business Process Catalog · March 2026 release</div>
+      <button class="amcbtn" onclick="closeAbout()">Close</button>
     </div>
   </div>
 </div>
@@ -635,784 +491,357 @@ mark{background:transparent;color:var(--sage);font-weight:500}
 <script>
 'use strict';
 
-// ════════════════════════════════════════════════════════════════
-// DATA MODEL
-// ════════════════════════════════════════════════════════════════
-const bySeq = new Map();
-const roots = [];
-let state = {
-  selected: null,
-  expanded: new Set(),
-  filters: { families: [], products: [] },
-  activeTab: 'overview',
-  treeFilter: '',
-};
+const bySeq=new Map(), roots=[];
+const BADGE={'End to end':'E2E','Process area':'Area','Process':'Proc','Scenario':'Scen','System process':'Sys','Test case':'Test'};
+const COLOR={'End to end':'var(--e2e)','Process area':'var(--area)','Process':'var(--proc)','Scenario':'var(--scen)','System process':'var(--sysp)','Test case':'var(--test)'};
+const NEXT={'End to end':'Process Areas','Process area':'Processes','Process':'Scenarios','Scenario':'System Processes','System process':'Test Cases','Test case':null};
+let ST={sel:null,exp:new Set(),fams:[],prods:[],atab:'flow',tq:''};
+let fset=null;
 
-const TYPE_LABEL = {
-  'End to end': 'E2E', 'Process area': 'Area', 'Process': 'Proc',
-  'Scenario': 'Scen', 'System process': 'Sys', 'Test case': 'Test',
-};
-const TYPE_CLASS = {
-  'End to end': 'e2e', 'Process area': 'area', 'Process': '',
-  'Scenario': '', 'System process': '', 'Test case': '',
-};
-
-function build() {
-  const raw = window.CATALOG;
-
-  // Index
-  raw.nodes.forEach(n => bySeq.set(n.s, { ...n, children: [], _dom: null }));
-
-  // Wire parent→child
-  raw.nodes.forEach(n => {
-    if (!n.p) {
-      if (n.y === 'End to end') roots.push(bySeq.get(n.s));
-    } else {
-      const parent = bySeq.get(n.p);
-      const node   = bySeq.get(n.s);
-      if (parent && node) parent.children.push(node);
-      else if (node && n.y === 'End to end') roots.push(node);
-    }
+function build(){
+  const raw=window.CATALOG;
+  raw.nodes.forEach(n=>bySeq.set(n.s,{...n,children:[]}));
+  raw.nodes.forEach(n=>{
+    if(!n.p){if(n.y==='End to end')roots.push(bySeq.get(n.s));}
+    else{const par=bySeq.get(n.p),self=bySeq.get(n.s);if(par&&self)par.children.push(self);else if(self&&n.y==='End to end')roots.push(self);}
   });
+  const sf=(a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true});
+  function sort(n){n.children.sort(sf);n.children.forEach(sort);}
+  roots.sort(sf);roots.forEach(sort);
+  const fs=document.getElementById('fsel-fam'),ps=document.getElementById('fsel-prod');
+  raw.families.forEach(f=>{const o=document.createElement('option');o.value=o.textContent=f;fs.appendChild(o);});
+  raw.products.forEach(p=>{const o=document.createElement('option');o.value=o.textContent=p;ps.appendChild(o);});
+  document.getElementById('nc').textContent=raw.nodes.length.toLocaleString()+' nodes';
+}
 
-  // Sort by seqId
-  function sortNode(node) {
-    node.children.sort((a, b) => a.s.localeCompare(b.s, undefined, { numeric: true }));
-    node.children.forEach(sortNode);
+// ── Filters ─────────────────────────────
+function compFset(){
+  if(!ST.fams.length&&!ST.prods.length){fset=null;return;}
+  fset=new Set();
+  function ok(n){return(!ST.fams.length||n.af.some(f=>ST.fams.includes(f)))&&(!ST.prods.length||n.pr.some(p=>ST.prods.includes(p)));}
+  function up(n){fset.add(n.s);if(n.p){const par=bySeq.get(n.p);if(par&&!fset.has(par.s))up(par);}}
+  bySeq.forEach(n=>{if(ok(n))up(n);});
+}
+function addF(t,v){if(!v)return;const a=t==='fam'?ST.fams:ST.prods;if(!a.includes(v)){a.push(v);syncFUI();compFset();renderTree();}}
+function remF(t,v){const a=t==='fam'?ST.fams:ST.prods,i=a.indexOf(v);if(i!==-1){a.splice(i,1);syncFUI();compFset();renderTree();}}
+function clearF(){ST.fams=[];ST.prods=[];syncFUI();compFset();renderTree();}
+function syncFUI(){
+  document.getElementById('fchips-fam').innerHTML=ST.fams.map(f=>`<span class="fchip">${e(f)}<span class="fchipx" onclick="remF('fam','${ea(f)}')">×</span></span>`).join('');
+  document.getElementById('fchips-prod').innerHTML=ST.prods.map(p=>`<span class="fchip">${e(p)}<span class="fchipx" onclick="remF('prod','${ea(p)}')">×</span></span>`).join('');
+  document.getElementById('fclear').classList.toggle('on',!!(ST.fams.length||ST.prods.length));
+}
+
+// ── Tree ────────────────────────────────
+function nvis(n){
+  if(fset&&!fset.has(n.s))return false;
+  if(ST.tq){if(n.t.toLowerCase().includes(ST.tq))return true;return n.children.some(c=>nvis(c));}
+  return true;
+}
+function renderTree(){
+  const root=document.getElementById('troot');root.innerHTML='';
+  let cnt=0;
+  function rn(node,cont){
+    if(!nvis(node))return;cnt++;
+    const isE=ST.exp.has(node.s),isS=ST.sel===node.s,hasV=node.children.some(c=>nvis(c));
+    const bdg=BADGE[node.y]||node.y,lcls=node.y==='End to end'?'e2e':node.y==='Process area'?'area':'';
+    let lbl=e(node.t);
+    if(ST.tq&&node.t.toLowerCase().includes(ST.tq)){const re=new RegExp(`(${ST.tq.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');lbl=e(node.t).replace(re,'<mark>$1</mark>');}
+    const showProd=['Scenario','System process','Test case'].includes(node.y)&&node.pr.length;
+    const ptag=showProd?`<span class="tprod">${e(node.pr[0])}${node.pr.length>1?` +${node.pr.length-1}`:''}</span>`:'';
+    const w=document.createElement('div');
+    w.innerHTML=`<div class="tn${isS?' sel':''}" data-s="${node.s}"><span class="ttog${hasV?(isE?' op':''): ' lf'}" data-tog="${node.s}">▶</span><span class="tbdg ${bdg}">${bdg}</span><span class="tlbl ${lcls}">${lbl}</span>${ptag}</div>`;
+    if(hasV&&isE){const ch=document.createElement('div');ch.className='tch';node.children.forEach(c=>rn(c,ch));w.appendChild(ch);}
+    cont.appendChild(w);
   }
-  roots.sort((a, b) => a.s.localeCompare(b.s, undefined, { numeric: true }));
-  roots.forEach(sortNode);
-
-  // Populate filters
-  const fSel = document.getElementById('family-select');
-  const pSel = document.getElementById('product-select');
-  raw.families.forEach(f => {
-    const o = document.createElement('option');
-    o.value = o.textContent = f;
-    fSel.appendChild(o);
-  });
-  raw.products.forEach(p => {
-    const o = document.createElement('option');
-    o.value = o.textContent = p;
-    pSel.appendChild(o);
-  });
-
-  // Count info
-  document.getElementById('node-count').textContent = `${raw.nodes.length.toLocaleString()} nodes`;
+  roots.forEach(r=>rn(r,root));
+  if(!cnt)root.innerHTML='<div class="tnone">No processes match the current filters.</div>';
+  root.removeEventListener('click',tClick);
+  root.addEventListener('click',tClick);
 }
-
-// ════════════════════════════════════════════════════════════════
-// FILTER LOGIC
-// ════════════════════════════════════════════════════════════════
-let filteredSet = null; // null = show all
-
-function computeFilteredSet() {
-  const { families, products } = state.filters;
-  if (!families.length && !products.length) { filteredSet = null; return; }
-
-  filteredSet = new Set();
-
-  function nodeMatches(n) {
-    const famOk = !families.length || n.af.some(f => families.includes(f));
-    const prodOk = !products.length || n.pr.some(p => products.includes(p));
-    return famOk && prodOk;
-  }
-
-  // Mark all ancestors of matching nodes
-  function markAncestors(n) {
-    filteredSet.add(n.s);
-    if (n.p) {
-      const par = bySeq.get(n.p);
-      if (par && !filteredSet.has(par.s)) markAncestors(par);
-    }
-  }
-
-  bySeq.forEach(n => {
-    if (nodeMatches(n)) markAncestors(n);
-  });
+function tClick(e){
+  const tog=e.target.closest('[data-tog]'),node=e.target.closest('[data-s]');
+  if(!node)return;
+  const s=node.dataset.s;if(!s)return;
+  if(tog){if(ST.exp.has(s))ST.exp.delete(s);else ST.exp.add(s);}
+  ST.sel=s;renderTree();loadNode(bySeq.get(s));pushH(s);
 }
+function filterTree(q){ST.tq=q.toLowerCase().trim();renderTree();}
 
-function addFilter(type, value) {
-  if (!value) return;
-  const arr = state.filters[type === 'family' ? 'families' : 'products'];
-  if (!arr.includes(value)) {
-    arr.push(value);
-    updateFilterUI();
-    computeFilteredSet();
-    renderTree();
-  }
+// ── Node content ─────────────────────────
+function loadNode(node){
+  if(!node)return;
+  document.getElementById('empty').style.display='none';
+  document.getElementById('nhdr').style.display='block';
+  document.getElementById('tabs').style.display='flex';
+  document.getElementById('cb').style.display='block';
+  const pill=document.getElementById('nhpill');
+  pill.textContent=node.y;pill.className='nhpill '+node.y.replace(/\s+/g,'-');
+  document.getElementById('nhseq').textContent=node.s;
+  document.getElementById('nhtitle').textContent=node.t;
+  const tg=document.getElementById('nhtags');tg.innerHTML='';
+  node.af.forEach(f=>tg.innerHTML+=`<span class="nhtag af">${e(f)}</span>`);
+  node.pr.forEach(p=>tg.innerHTML+=`<span class="nhtag" onclick="addF('prod','${ea(p)}')" title="Filter to ${e(p)}">${e(p)}</span>`);
+  if(node.cs)tg.innerHTML+=`<span class="nhstat">${e(node.cs)}</span>`;
+  buildBC(node);
+  const hasT=node.children.some(c=>c.y==='Test case')||node.children.some(c=>c.y==='System process');
+  document.querySelector('[data-t="testcases"]').classList.toggle('hid',!hasT);
+  if(ST.atab==='testcases'&&!hasT)ST.atab='flow';
+  rFlow(node);rOverview(node);rD365(node);rSystem(node);rTestCases(node);rAPQC(node);rRail(node);
+  switchTab(ST.atab);
 }
-
-function removeFilter(type, value) {
-  const arr = state.filters[type === 'family' ? 'families' : 'products'];
-  const i = arr.indexOf(value);
-  if (i !== -1) { arr.splice(i, 1); updateFilterUI(); computeFilteredSet(); renderTree(); }
-}
-
-function clearAllFilters() {
-  state.filters.families = [];
-  state.filters.products = [];
-  updateFilterUI();
-  computeFilteredSet();
-  renderTree();
-}
-
-function updateFilterUI() {
-  const { families, products } = state.filters;
-  const hasAny = families.length || products.length;
-
-  const fc = document.getElementById('family-chips');
-  const pc = document.getElementById('product-chips');
-  fc.innerHTML = families.map(f =>
-    `<span class="f-chip">${f}<span class="remove" onclick="removeFilter('family','${f.replace(/'/g,"\\'")}')">×</span></span>`
-  ).join('');
-  pc.innerHTML = products.map(p =>
-    `<span class="f-chip">${p}<span class="remove" onclick="removeFilter('product','${p.replace(/'/g,"\\'")}')">×</span></span>`
-  ).join('');
-
-  document.getElementById('clear-filters').classList.toggle('show', !!hasAny);
-}
-
-// ════════════════════════════════════════════════════════════════
-// TREE RENDERING
-// ════════════════════════════════════════════════════════════════
-function renderTree() {
-  const container = document.getElementById('tree-root');
-  container.innerHTML = '';
-  const tq = state.treeFilter.toLowerCase();
-
-  let rendered = 0;
-  function nodeVisible(node) {
-    if (filteredSet && !filteredSet.has(node.s)) return false;
-    if (tq) {
-      // show if title matches OR has matching descendant
-      const selfMatch = node.t.toLowerCase().includes(tq);
-      if (selfMatch) return true;
-      return node.children.some(c => nodeVisible(c));
-    }
-    return true;
-  }
-
-  function renderNode(node, container, depth = 0) {
-    if (!nodeVisible(node)) return;
-    rendered++;
-
-    const wrap = document.createElement('div');
-    const hasVisibleChildren = node.children.some(c => nodeVisible(c));
-    const isExpanded = state.expanded.has(node.s);
-    const isSelected = state.selected === node.s;
-
-    const badge = TYPE_LABEL[node.y] || node.y;
-    const badgeClass = { 'End to end': 'E2E', 'Process area': 'Area', 'Process': 'Proc',
-      'Scenario': 'Scen', 'System process': 'Sys', 'Test case': 'Test' }[node.y] || '';
-    const labelClass = node.y === 'End to end' ? 'e2e' : node.y === 'Process area' ? 'area' : '';
-
-    // Product tag (show for Scenario and below)
-    const showProd = ['Scenario', 'System process', 'Test case'].includes(node.y);
-    const prodTag = showProd && node.pr.length
-      ? `<span class="t-prod">${node.pr[0]}${node.pr.length > 1 ? ` +${node.pr.length - 1}` : ''}</span>` : '';
-
-    // Highlight if tree filter active
-    let labelText = esc(node.t);
-    if (tq && node.t.toLowerCase().includes(tq)) {
-      const re = new RegExp(`(${tq.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      labelText = esc(node.t).replace(re, '<mark>$1</mark>');
-    }
-
-    wrap.innerHTML = `
-      <div class="t-node${isSelected ? ' selected' : ''}" data-seq="${node.s}">
-        <span class="t-toggle${hasVisibleChildren ? (isExpanded ? ' open' : '') : ' leaf'}" data-action="toggle" data-seq="${node.s}">▶</span>
-        <span class="t-badge ${badgeClass}">${badge}</span>
-        <span class="t-label ${labelClass}">${labelText}</span>
-        ${prodTag}
-      </div>
-    `;
-
-    if (hasVisibleChildren && isExpanded) {
-      const childWrap = document.createElement('div');
-      childWrap.className = 't-children';
-      node.children.forEach(c => renderNode(c, childWrap, depth + 1));
-      wrap.appendChild(childWrap);
-    }
-
-    container.appendChild(wrap);
-  }
-
-  roots.forEach(r => renderNode(r, container));
-
-  if (rendered === 0) {
-    container.innerHTML = '<div class="t-no-match">No processes match the current filters.</div>';
-  }
-
-  // Re-attach event delegation
-  container.removeEventListener('click', treeClick);
-  container.addEventListener('click', treeClick);
-}
-
-function treeClick(e) {
-  const toggle = e.target.closest('[data-action="toggle"]');
-  const node   = e.target.closest('.t-node');
-  if (!node) return;
-
-  const seq = node.dataset.seq;
-  if (!seq) return;
-
-  if (toggle) {
-    // Toggle expand
-    if (state.expanded.has(seq)) state.expanded.delete(seq);
-    else state.expanded.add(seq);
-    renderTree();
-  }
-
-  // Always select
-  state.selected = seq;
-  renderTree();
-  loadContent(bySeq.get(seq));
-  updateURL(seq);
-}
-
-function filterTree(q) {
-  state.treeFilter = q.trim();
-  renderTree();
-}
-
-// ════════════════════════════════════════════════════════════════
-// CONTENT RENDERING
-// ════════════════════════════════════════════════════════════════
-function loadContent(node) {
-  if (!node) return;
-
-  document.getElementById('empty-state').style.display = 'none';
-  document.getElementById('node-header').style.display  = 'block';
-  document.getElementById('tabs').style.display         = 'flex';
-  document.getElementById('content-body').style.display = 'block';
-
-  // Header
-  const typeBadge = document.getElementById('nh-type-badge');
-  typeBadge.textContent = node.y;
-  typeBadge.className = 'nh-type ' + node.y.replace(/\s+/g, '-');
-  document.getElementById('nh-seq').textContent = node.s;
-  document.getElementById('nh-title').textContent = node.t;
-
-  // Tags
-  const tagsEl = document.getElementById('nh-tags');
-  tagsEl.innerHTML = '';
-  node.af.forEach(f => tagsEl.innerHTML += `<span class="nh-tag app">${f}</span>`);
-  node.pr.forEach(p => tagsEl.innerHTML += `<span class="nh-tag" onclick="addFilter('product','${p.replace(/'/g,"\\'")}');return false">${p}</span>`);
-  if (node.cs) tagsEl.innerHTML += `<span class="nh-stat">${node.cs}</span>`;
-
-  // Breadcrumb
-  buildBreadcrumb(node);
-
-  // Tabs
-  const tcTab = document.querySelector('[data-tab="testcases"]');
-  const hasTestCases = node.children.some(c => c.y === 'Test case');
-  tcTab.classList.toggle('hidden', !hasTestCases);
-  if (state.activeTab === 'testcases' && !hasTestCases) switchTab('overview');
-
-  // Render panels
-  renderOverview(node);
-  renderD365(node);
-  renderSystem(node);
-  renderTestCases(node);
-  renderAPQC(node);
-
-  // Right rail
-  renderRail(node);
-
-  // Restore active tab
-  switchTab(state.activeTab);
-}
-
-function buildBreadcrumb(node) {
-  const bc = document.getElementById('breadcrumb');
-  bc.innerHTML = '';
-  const chain = [];
-  let cur = node;
-  while (cur) { chain.unshift(cur); cur = cur.p ? bySeq.get(cur.p) : null; }
-
-  chain.forEach((n, i) => {
-    if (i > 0) bc.innerHTML += '<span class="bc-sep">›</span>';
-    const span = document.createElement('span');
-    span.className = 'bc-item' + (i === chain.length - 1 ? ' active' : '');
-    span.textContent = n.t.length > 40 ? n.t.slice(0, 38) + '…' : n.t;
-    span.onclick = () => selectAndReveal(n.s);
-    bc.appendChild(span);
+function buildBC(node){
+  const bc=document.getElementById('bc');bc.innerHTML='';
+  const chain=[];let cur=node;
+  while(cur){chain.unshift(cur);cur=cur.p?bySeq.get(cur.p):null;}
+  chain.forEach((n,i)=>{
+    if(i)bc.innerHTML+='<span class="bc-s">›</span>';
+    const s=document.createElement('span');
+    s.className='bc-p'+(i===chain.length-1?' cur':'');
+    s.textContent=n.t.length>35?n.t.slice(0,33)+'…':n.t;s.title=n.t;
+    s.onclick=()=>selectReveal(n.s);bc.appendChild(s);
   });
 }
 
-function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── FLOW DIAGRAM ─────────────────────────
+function rFlow(node){
+  const el=document.getElementById('p-flow');
+  const ch=node.children.filter(c=>!fset||fset.has(c.s));
+  if(!ch.length){
+    el.innerHTML=`<div class="callout sg" style="margin-top:8px"><div class="clbl">Leaf node</div><div class="ctxt">This ${e(node.y)} has no sub-processes. Review the <strong>Overview</strong> and <strong>System Details</strong> tabs for full context, or explore the parent node's flow for a broader view.</div></div>`;
+    return;
+  }
+  const ct=ch[0].y,cv=COLOR[ct]||'var(--sage)',bk=BADGE[ct]||ct;
+  const prods=[...new Set(ch.flatMap(c=>c.pr))].sort();
+  let sum=`<div class="flow-summary"><strong style="color:var(--tx)">${e(node.t)}</strong><span style="color:var(--tx3)">→</span><span class="flow-spill" style="background:${cv}">${ch.length} ${e(ct)}${ch.length!==1?'s':''}</span>`;
+  if(prods.length&&prods.length<=7)prods.forEach(p=>sum+=`<span style="font-size:11px;color:var(--tx3)">· ${e(p)}</span>`);
+  else if(prods.length>7)sum+=`<span style="font-size:11px;color:var(--tx3)">· ${prods.length} products</span>`;
+  sum+='</div>';
+  const diag=ch.length<=8?buildLinear(ch,cv,bk):buildGrid(ch,cv,bk);
+  el.innerHTML=`<div class="flow-wrap">${sum}<div class="slbl" style="margin-bottom:12px">${e(ct)} flow — click any card to navigate</div>${diag}</div>`;
 }
 
-function prose(text) {
-  if (!text) return '';
-  const cleaned = text.replace(/\*\*/g,'').replace(/\*/g,'').replace(/\t+/g,' ').trim();
-  const paras = cleaned.split(/\n{2,}/);
-  return paras.map(p => {
-    const lines = p.split('\n').map(l => l.trim()).filter(Boolean);
-    if (lines.length > 1 && lines.some(l => /^\d+\./.test(l) || /^[•\-\*]/.test(l))) {
-      return '<ul style="margin:4px 0 8px 18px;font-size:13px;color:var(--tx2);line-height:1.7">' +
-        lines.map(l => `<li>${esc(l.replace(/^[\d\.•\-\*]+\s*/,''))}</li>`).join('') + '</ul>';
-    }
-    return `<p class="prose">${esc(lines.join(' '))}</p>`;
+function buildLinear(ch,cv,bk){
+  const COLS=ch.length<=4?ch.length:Math.min(4,ch.length);
+  const rows=[];for(let i=0;i<ch.length;i+=COLS)rows.push(ch.slice(i,i+COLS));
+  let h='<div class="flow-canvas">';
+  const arrowSVG=`<svg width="28" height="14" viewBox="0 0 28 14" fill="none"><line x1="0" y1="7" x2="22" y2="7" stroke="var(--bd)" stroke-width="1.5"/><polyline points="17,3 22,7 17,11" fill="none" stroke="var(--bd)" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+  const downSVG=`<svg width="14" height="30" viewBox="0 0 14 30" fill="none"><line x1="7" y1="0" x2="7" y2="24" stroke="var(--bd)" stroke-width="1.5"/><polyline points="3,19 7,24 11,19" fill="none" stroke="var(--bd)" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+  rows.forEach((row,ri)=>{
+    h+=`<div class="flow-row">`;
+    row.forEach((c,ci)=>{
+      const gc=c.children.length;
+      h+=`<div class="fcard" style="--ca:${cv}" onclick="selectReveal('${c.s}')"><div class="fcard-type">${e(bk)}</div><div class="fcard-title">${e(c.t)}</div><div class="fcard-seq">${e(c.s)}</div>${gc?`<div class="fcard-count">${gc} child${gc!==1?'ren':''}</div>`:''}</div>`;
+      if(ci<row.length-1)h+=`<div class="farr">${arrowSVG}</div>`;
+    });
+    h+='</div>';
+    if(ri<rows.length-1)h+=`<div class="fdarr" style="justify-content:center;padding-left:${(160+36)*(COLS-1)/2}px"><div class="fdinner">${downSVG}</div></div>`;
+  });
+  h+='</div>';return h;
+}
+
+function buildGrid(ch,cv,bk){
+  let h='<div class="flow-grid">';
+  ch.forEach(c=>{const gc=c.children.length;h+=`<div class="fcard" style="--ca:${cv}" onclick="selectReveal('${c.s}')"><div class="fcard-type">${e(bk)}</div><div class="fcard-title">${e(c.t)}</div><div class="fcard-seq">${e(c.s)}</div>${gc?`<div class="fcard-count">${gc} child${gc!==1?'ren':''}</div>`:''}</div>`;});
+  h+='</div>';return h;
+}
+
+// ── Overview ─────────────────────────────
+function rOverview(node){
+  const el=document.getElementById('p-overview');let h='';
+  h+=`<div class="slbl">Business context</div>`;
+  h+=node.d?pFmt(node.d):`<p class="prose" style="font-style:italic;color:var(--tx3)">Description being authored by Microsoft. See D365 Support tab or the official documentation links for coverage details.</p>`;
+  if(['End to end','Process area'].includes(node.y))
+    h+=`<div class="callout"><div class="clbl">Scope</div><div class="ctxt">This ${e(node.y)} — <strong>${e(node.t)}</strong> — contains ${node.children.length} direct child ${e(node.children[0]?.y||'processes')}. Expand the tree or use the <strong>Process Flow</strong> tab to visualise the full hierarchy.</div></div>`;
+  const counts={};function cnt(n){n.children.forEach(c=>{counts[c.y]=(counts[c.y]||0)+1;cnt(c);});}cnt(node);
+  if(Object.keys(counts).length)
+    h+=`<div class="callout sg"><div class="clbl">Hierarchy coverage</div><div class="ctxt">`+Object.entries(counts).map(([t,c])=>`${c} ${t}${c!==1?'s':''}`).join(' · ')+'</div></div>';
+  el.innerHTML=h;
+}
+
+// ── D365 Support ──────────────────────────
+function rD365(node){
+  const el=document.getElementById('p-d365');let h='';
+  if(node.pr.length)h+=`<div class="slbl">Product coverage</div><div class="pgrid">`+node.pr.map(p=>`<span class="pchip hit">${e(p)}</span>`).join('')+`</div>`;
+  if(node.af.length)h+=`<div class="slbl" style="margin-top:14px">Application family</div><div class="pgrid">`+node.af.map(f=>`<span class="pchip hit">${e(f)}</span>`).join('')+`</div>`;
+  if(node.d)h+=`<div class="slbl" style="margin-top:14px">How Dynamics 365 supports this</div>`+pFmt(node.d);
+  if(node.m||node.mp)h+=`<div class="callout sg" style="margin-top:8px"><div class="clbl">In-product navigation</div><div class="ctxt">${node.m?`<strong>Module:</strong> ${e(node.m)}<br>`:''}${node.mp?`<strong>Menu path:</strong> ${e(node.mp)}<br>`:''}${node.mi?`<strong>Menu item:</strong> ${e(node.mi)}`:''}</div></div>`;
+  if(!node.pr.length&&!node.af.length&&!node.d)h+=`<p class="prose" style="color:var(--tx3);font-style:italic">No product-level data at this level. See child scenarios for product-specific D365 coverage.</p>`;
+  el.innerHTML=h;
+}
+
+// ── System Details ────────────────────────
+function rSystem(node){
+  const el=document.getElementById('p-system');let h='';
+  h+=`<div class="slbl">System navigation</div><div class="dtbl">${dr('Sequence ID',node.s,true)}${dr('Node type',node.y)}${node.m?dr('Module',node.m,true):''}${node.mp?dr('Menu path',node.mp,true):''}${node.mi?dr('Menu item',node.mi,true):''}${node.cs?dr('Catalog status',node.cs):''}${node.as?dr('Article status',node.as):''}</div>`;
+  if(node.r&&node.r.length){
+    h+=`<div class="slbl" style="margin-top:16px">Microsoft references</div>`;
+    node.r.forEach(ref=>{
+      const lbl=(ref.split('/').pop()||'Documentation').replace(/-/g,' ').replace(/^\w/,c=>c.toUpperCase());
+      h+=`<a class="rlink" href="${e(ref)}" target="_blank" rel="noopener"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>${e(lbl)}</a>`;
+    });
+  }
+  h+=`<div class="callout sg" style="margin-top:16px"><div class="clbl">Implementation guidance</div><div class="ctxt">Trace this process upward via the breadcrumb for end-to-end context. Trace downward through child nodes to identify all system processes and test cases required during UAT.</div></div>`;
+  el.innerHTML=h;
+}
+
+// ── Test Cases ────────────────────────────
+function rTestCases(node){
+  const el=document.getElementById('p-testcases');
+  const sps=node.children.filter(c=>c.y==='System process'),tcs=node.children.filter(c=>c.y==='Test case');
+  let h='';
+  if(sps.length){
+    h+=`<div class="slbl">System Processes (${sps.length})</div>`;
+    sps.forEach(sp=>{const stcs=sp.children.filter(c=>c.y==='Test case');h+=`<div class="tccard"><div class="tcbdg" style="background:var(--sysp)">System Process</div><div class="tctitle">${e(sp.t)}</div>${sp.d?`<p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:4px">${e(sp.d.slice(0,300))}${sp.d.length>300?'…':''}</p>`:''}<div class="tcseq">${e(sp.s)}</div>${stcs.length?`<div style="margin-top:8px;font-size:11px;color:var(--tx3)">${stcs.length} test case${stcs.length!==1?'s':''} — click in tree to view</div>`:''}</div>`;});
+  }
+  if(tcs.length){
+    h+=`<div class="slbl" style="margin-top:${sps.length?16:0}px">Test Cases (${tcs.length})</div>`;
+    tcs.forEach(tc=>{h+=`<div class="tccard"><div class="tcbdg" style="background:var(--test)">Test Case</div><div class="tctitle">${e(tc.t)}</div>${tc.d?`<p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-top:4px">${e(tc.d.slice(0,300))}${tc.d.length>300?'…':''}</p>`:''}<div class="tcseq">${e(tc.s)}</div></div>`;});
+  }
+  if(!sps.length&&!tcs.length)h=`<div class="epanel">No system processes or test cases at this level.</div>`;
+  el.innerHTML=h;
+}
+
+// ── APQC ─────────────────────────────────
+function rAPQC(node){
+  const el=document.getElementById('p-apqc');let h='';
+  if(node.qi)
+    h+=`<div class="slbl">APQC Framework alignment</div><div class="aqcard"><div class="aqid">${e(node.qi)}</div><div><div class="aqttl">${e(node.qd||'APQC Process Classification Framework reference')}</div><div class="aqtxt">Industry-standard reference from the APQC PCF. Use this ID to align D365 implementation coverage with cross-industry maturity benchmarks and regulatory gap analyses.</div></div></div>`;
+  else
+    h+=`<div class="callout"><div class="clbl">APQC reference</div><div class="ctxt">No APQC ID mapped at this level. Check parent or child nodes, or refer to the Microsoft Business Process Catalog documentation.</div></div>`;
+  h+=`<div class="slbl" style="margin-top:16px">About APQC</div><p class="prose">The APQC Process Classification Framework (PCF) is a cross-industry taxonomy used worldwide. Microsoft maps D365 scenarios to APQC IDs to help organisations benchmark implementation coverage and align with industry standards.</p>`;
+  if(['End to end','Process area','Process'].includes(node.y)){
+    const qs=new Set();function gq(n){if(n.qi)qs.add(n.qi);n.children.forEach(gq);}gq(node);
+    if(qs.size)h+=`<div class="callout ar"><div class="clbl">APQC IDs in subtree (${qs.size})</div><div class="ctxt" style="font-family:'JetBrains Mono',monospace;font-size:12px">${[...qs].sort().join(' · ')}</div></div>`;
+  }
+  el.innerHTML=h;
+}
+
+// ── Right Rail — contextual next level ────
+function rRail(node){
+  const nl=NEXT[node.y];
+  const ch=node.children.filter(c=>!fset||fset.has(c.s));
+  document.getElementById('rlbl').textContent=nl||'Hierarchy';
+  document.getElementById('rsub').textContent=nl&&ch.length?`${ch.length} item${ch.length!==1?'s':''}`:node.t.length>28?node.t.slice(0,26)+'…':node.t;
+  const rcl=document.getElementById('rclist');
+  if(!nl||!ch.length){rcl.innerHTML=`<div class="rempty">This is a leaf node — no sub-processes below this level.</div>`;}
+  else{
+    const bk=BADGE[ch[0].y]||ch[0].y;
+    rcl.innerHTML=ch.map(c=>{const gc=c.children.length;return`<div class="ri" onclick="selectReveal('${c.s}')"><span class="ri-b ${bk}">${bk}</span><div><div class="ri-t">${e(c.t)}</div>${gc?`<div class="ri-c">${gc} child${gc!==1?'ren':''}</div>`:''}</div></div>`;}).join('');
+  }
+  // Docs
+  const par=node.p?bySeq.get(node.p):null;
+  const refs=[...new Set([...(node.r||[]),...(par?par.r||[]:[])]).values()].slice(0,5);
+  const rd=document.getElementById('rdocs'),rdl=document.getElementById('rdocslist');
+  if(refs.length){
+    rd.style.display='block';
+    rdl.innerHTML=refs.map(ref=>{const lbl=(ref.split('/').pop()||'Docs').replace(/-/g,' ').replace(/^\w/,c=>c.toUpperCase());return`<a class="rdlink" href="${e(ref)}" target="_blank" rel="noopener"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--sage);flex-shrink:0;margin-top:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="rdlink-t">${e(lbl.length>45?lbl.slice(0,43)+'…':lbl)}</span></a>`;}).join('');
+  } else rd.style.display='none';
+}
+
+// ── Tabs ─────────────────────────────────
+function switchTab(name){
+  const t=document.querySelector(`[data-t="${name}"]`);
+  if(!t||t.classList.contains('hid'))name='flow';
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('act'));
+  document.querySelectorAll('.tp').forEach(x=>x.classList.remove('act'));
+  document.querySelector(`[data-t="${name}"]`).classList.add('act');
+  document.getElementById(`p-${name}`).classList.add('act');
+  ST.atab=name;
+}
+
+// ── Search ────────────────────────────────
+let sidx=[];
+function buildIdx(){if(sidx.length)return;bySeq.forEach(n=>sidx.push({s:n.s,t:n.t,y:n.y,_l:(n.t+' '+(n.d||'')+' '+(n.qi||'')+' '+(n.m||'')+' '+n.pr.join(' ')).toLowerCase()}));}
+function openSearch(){buildIdx();document.getElementById('sov').classList.add('on');document.getElementById('sin').focus();}
+function closeSearch(){document.getElementById('sov').classList.remove('on');document.getElementById('sin').value='';document.getElementById('sres').innerHTML='<div class="shint">Search across all 5,873 nodes — titles, descriptions, APQC IDs, modules, products</div>';}
+let stimer;
+function doSearch(q){clearTimeout(stimer);stimer=setTimeout(()=>_search(q),100);}
+function _search(q){
+  const el=document.getElementById('sres');q=q.trim();
+  if(!q){el.innerHTML='<div class="shint">Search across all 5,873 nodes</div>';return;}
+  const lq=q.toLowerCase(),ws=lq.split(/\s+/);
+  const hits=sidx.filter(n=>ws.every(w=>n._l.includes(w)));
+  if(!hits.length){el.innerHTML=`<div class="sempty">No results for "${e(q)}"</div>`;return;}
+  hits.forEach(r=>{const tl=r.t.toLowerCase();r._sc=tl===lq?100:tl.startsWith(lq)?80:tl.includes(lq)?60:40;});
+  hits.sort((a,b)=>b._sc-a._sc);
+  const top=hits.slice(0,50),grps={};
+  ['End to end','Process area','Process','Scenario','System process','Test case'].forEach(type=>{const g=top.filter(r=>r.y===type);if(g.length)grps[type]=g;});
+  const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  function hl(s){return e(s).replace(re,'<mark>$1</mark>');}
+  let h='';
+  Object.entries(grps).forEach(([type,items])=>{
+    const bk=BADGE[type]||type;
+    h+=`<div class="sglbl">${e(type)} (${items.length})</div>`;
+    items.forEach(r=>{
+      const chain=[];let cur=bySeq.get(r.s);
+      while(cur&&cur.p){cur=bySeq.get(cur.p);if(cur)chain.unshift(cur.t);}
+      const path=chain.slice(-3).join(' › ');
+      h+=`<div class="sri" onclick="selSearch('${r.s}')"><span class="srbdg ${bk}">${bk}</span><div><div class="srt">${hl(r.t.length>80?r.t.slice(0,78)+'…':r.t)}</div>${path?`<div class="srp">${e(path.length>70?path.slice(0,68)+'…':path)}</div>`:''}</div></div>`;
+    });
+  });
+  if(hits.length>50)h+=`<div class="shint">${hits.length-50} more — refine your search</div>`;
+  el.innerHTML=h;
+}
+function selSearch(s){closeSearch();selectReveal(s);}
+
+// ── About ─────────────────────────────────
+function openAbout(){document.getElementById('aov').classList.add('on');}
+function closeAbout(){document.getElementById('aov').classList.remove('on');}
+
+// ── Navigation ────────────────────────────
+function selectReveal(seq){
+  const node=bySeq.get(seq);if(!node)return;
+  let cur=node;while(cur.p){cur=bySeq.get(cur.p);if(cur)ST.exp.add(cur.s);}
+  ST.sel=seq;renderTree();loadNode(node);pushH(seq);
+  setTimeout(()=>{const el=document.querySelector('.tn.sel');if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
+}
+function resetView(){
+  ST.sel=null;
+  document.getElementById('empty').style.display='flex';
+  document.getElementById('nhdr').style.display='none';
+  document.getElementById('tabs').style.display='none';
+  document.getElementById('cb').style.display='none';
+  document.getElementById('bc').innerHTML='<span style="font-size:12px;color:var(--tx3)">D365 Process Navigator</span>';
+}
+function pushH(s){if(history.replaceState)history.replaceState(null,'','#'+s);}
+function restoreH(){const h=location.hash.slice(1);if(h&&bySeq.has(h))selectReveal(h);}
+
+// ── Utilities ─────────────────────────────
+function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ea(s){return String(s||'').replace(/'/g,"\\'");}
+function dr(k,v,mono=false){return `<div class="drow"><div class="dk">${e(k)}</div><div class="dv${mono?'':' p'}">${e(v)}</div></div>`;}
+function pFmt(text){
+  if(!text)return'';
+  const cleaned=text.replace(/\*\*/g,'').replace(/\*/g,'').trim();
+  return cleaned.split(/\n{2,}/).map(p=>{
+    const lines=p.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(lines.length>1&&lines.some(l=>/^\d+\.|^[•\-]/.test(l)))
+      return`<div class="prose"><ul style="margin:4px 0 0 18px">${lines.map(l=>`<li>${e(l.replace(/^[\d\.•\-\*]+\s*/,''))}</li>`).join('')}</ul></div>`;
+    return`<p class="prose">${e(lines.join(' '))}</p>`;
   }).join('');
 }
 
-function renderOverview(node) {
-  const el = document.getElementById('panel-overview');
-  let html = '';
-
-  // Business rationale
-  html += `<div class="sec-label sec-gap">Business context</div>`;
-  if (node.d) {
-    html += prose(node.d);
-  } else {
-    html += `<p class="prose" style="font-style:italic;color:var(--tx3)">Full description is being authored by Microsoft. See the D365 Support tab for coverage details or consult the official documentation link.</p>`;
-  }
-
-  // What good looks like (for E2E and Area)
-  if (['End to end', 'Process area'].includes(node.y)) {
-    html += `<div class="callout"><div class="callout-label">End-to-end scope</div><div class="callout-text">This process spans <strong>${esc(node.t)}</strong>. Expand the tree to explore ${node.children.length} child processes and their associated scenarios, system processes, and test cases.</div></div>`;
-  }
-
-  // Child summary
-  const childTypes = {};
-  function countDescendants(n) {
-    n.children.forEach(c => { childTypes[c.y] = (childTypes[c.y]||0)+1; countDescendants(c); });
-  }
-  countDescendants(node);
-  if (Object.keys(childTypes).length) {
-    html += `<div class="callout sage"><div class="callout-label">Coverage</div><div class="callout-text">`;
-    html += Object.entries(childTypes).map(([t,c]) => `${c} ${t}${c!==1?'s':''}`).join(' · ');
-    html += `</div></div>`;
-  }
-
-  el.innerHTML = html;
-}
-
-function renderD365(node) {
-  const el = document.getElementById('panel-d365');
-  let html = '';
-
-  // Product coverage
-  html += `<div class="sec-label">Product coverage</div>`;
-  if (node.pr.length) {
-    html += `<div class="prod-grid">`;
-    node.pr.forEach(p => html += `<span class="prod-chip match">${esc(p)}</span>`);
-    html += `</div>`;
-  } else {
-    html += `<p class="prose" style="color:var(--tx3);font-style:italic">No specific product assigned at this level — see child scenarios for product-level coverage.</p>`;
-  }
-
-  // App family
-  if (node.af.length) {
-    html += `<div class="sec-label" style="margin-top:14px">Application family</div>`;
-    html += `<div class="prod-grid">${node.af.map(f => `<span class="prod-chip match">${esc(f)}</span>`).join('')}</div>`;
-  }
-
-  // Description focused on D365 capabilities
-  if (node.d) {
-    html += `<div class="sec-label" style="margin-top:14px">How Dynamics 365 supports this</div>`;
-    html += prose(node.d);
-  }
-
-  // Module / navigation hint
-  if (node.m || node.mp) {
-    html += `<div class="callout sage" style="margin-top:8px"><div class="callout-label">Navigation in D365</div><div class="callout-text">`;
-    if (node.m)  html += `<strong>Module:</strong> ${esc(node.m)}<br>`;
-    if (node.mp) html += `<strong>Menu path:</strong> ${esc(node.mp)}<br>`;
-    if (node.mi) html += `<strong>Menu item:</strong> ${esc(node.mi)}`;
-    html += `</div></div>`;
-  }
-
-  el.innerHTML = html;
-}
-
-function renderSystem(node) {
-  const el = document.getElementById('panel-system');
-  let html = '';
-
-  html += `<div class="sec-label">System navigation</div>`;
-  html += `<div class="def-list">`;
-  html += defRow('Sequence ID', node.s, true);
-  html += defRow('Node type', node.y);
-  if (node.m)  html += defRow('Module', node.m, true);
-  if (node.mp) html += defRow('Menu path', node.mp, true);
-  if (node.mi) html += defRow('Menu item', node.mi, true);
-  if (node.cs) html += defRow('Catalog status', node.cs);
-  if (node.as) html += defRow('Article status', node.as);
-  html += `</div>`;
-
-  // Refs
-  if (node.r && node.r.length) {
-    html += `<div class="sec-label" style="margin-top:16px">Microsoft references</div>`;
-    node.r.forEach(ref => {
-      const label = ref.includes('learn.microsoft.com') ? 'Microsoft Learn — ' + (ref.split('/').pop() || 'Documentation').replace(/-/g,' ') : ref;
-      html += `<a class="ref-link" href="${esc(ref)}" target="_blank" rel="noopener">
-        <svg class="ref-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        ${esc(label)}
-      </a>`;
-    });
-  }
-
-  // Implementation note
-  html += `<div class="callout sage" style="margin-top:16px"><div class="callout-label">Implementation guidance</div><div class="callout-text">For Dynamics 365 implementation projects, trace this process upward through the breadcrumb to understand the end-to-end context, and downward through child nodes to identify all system processes and test cases that must be validated during UAT.</div></div>`;
-
-  el.innerHTML = html;
-}
-
-function renderTestCases(node) {
-  const el = document.getElementById('panel-testcases');
-  const testCases = node.children.filter(c => c.y === 'Test case');
-  const sysprocs  = node.children.filter(c => c.y === 'System process');
-
-  let html = '';
-
-  if (sysprocs.length) {
-    html += `<div class="sec-label">System processes (${sysprocs.length})</div>`;
-    sysprocs.forEach(sp => {
-      const tcs = sp.children.filter(c => c.y === 'Test case');
-      html += `<div class="tc-card">
-        <div class="tc-badge" style="background:var(--sysp)">System Process</div>
-        <div class="tc-title">${esc(sp.t)}</div>
-        ${sp.d ? `<div class="tc-desc">${esc(sp.d.slice(0,200))}${sp.d.length>200?'…':''}</div>` : ''}
-        ${tcs.length ? `<div style="margin-top:8px;font-size:11px;color:var(--tx3)">${tcs.length} test case${tcs.length!==1?'s':''} attached</div>` : ''}
-      </div>`;
-    });
-  }
-
-  if (testCases.length) {
-    html += `<div class="sec-label" style="margin-top:${sysprocs.length?16:0}px">Test cases (${testCases.length})</div>`;
-    testCases.forEach(tc => {
-      html += `<div class="tc-card">
-        <div class="tc-badge">Test Case</div>
-        <div class="tc-title">${esc(tc.t)}</div>
-        ${tc.d ? `<div class="tc-desc">${esc(tc.d.slice(0,300))}${tc.d.length>300?'…':''}</div>` : ''}
-        <div style="margin-top:6px;font-size:10px;color:var(--tx3);font-family:'JetBrains Mono',monospace">${esc(tc.s)}</div>
-      </div>`;
-    });
-  }
-
-  if (!sysprocs.length && !testCases.length) {
-    html = `<div class="empty-content">No test cases or system processes defined at this level.</div>`;
-  }
-
-  el.innerHTML = html;
-}
-
-function renderAPQC(node) {
-  const el = document.getElementById('panel-apqc');
-  let html = '';
-
-  if (node.qi) {
-    html += `<div class="sec-label">APQC framework alignment</div>`;
-    html += `<div class="apqc-block">
-      <div class="apqc-id">${esc(node.qi)}</div>
-      <div>
-        <div class="apqc-title">${esc(node.qd || 'APQC Process Classification Framework reference')}</div>
-        <div class="apqc-text">Industry-standard reference ID from the APQC Process Classification Framework (PCF). Use this ID to align D365 implementation coverage with cross-industry maturity benchmarks, RFP responses, and regulatory gap analyses.</div>
-      </div>
-    </div>`;
-  } else {
-    html += `<div class="callout"><div class="callout-label">APQC reference</div><div class="callout-text">No APQC ID is mapped at this level. Check parent or child nodes for framework alignment, or refer to the Microsoft Business Process Catalog documentation for the latest APQC mapping.</div></div>`;
-  }
-
-  // Context note
-  html += `<div class="sec-label" style="margin-top:16px">About APQC mapping</div>`;
-  html += `<p class="prose">The APQC Process Classification Framework provides a taxonomy of business processes used by thousands of organizations worldwide. Microsoft maps D365 scenarios to APQC IDs to help organizations benchmark implementation coverage and align with industry standards.</p>`;
-
-  if (['End to end', 'Process area', 'Process'].includes(node.y)) {
-    // Show APQC distribution across children
-    const childAPQCs = new Set();
-    function collectAPQC(n) { if(n.qi) childAPQCs.add(n.qi); n.children.forEach(collectAPQC); }
-    collectAPQC(node);
-    if (childAPQCs.size) {
-      html += `<div class="callout sage"><div class="callout-label">APQC IDs in subtree</div><div class="callout-text" style="font-family:'JetBrains Mono',monospace;font-size:12px">${[...childAPQCs].sort().join(' · ')}</div></div>`;
-    }
-  }
-
-  el.innerHTML = html;
-}
-
-function defRow(key, val, mono = false) {
-  return `<div class="def-row"><div class="def-k">${esc(key)}</div><div class="def-v${mono?'':' prose-val'}">${esc(val)}</div></div>`;
-}
-
-// ════════════════════════════════════════════════════════════════
-// RIGHT RAIL
-// ════════════════════════════════════════════════════════════════
-function renderRail(node) {
-  renderRailFlow(node);
-  renderRailRelated(node);
-  renderRailDocs(node);
-}
-
-function renderRailFlow(node) {
-  const el = document.getElementById('rail-flow');
-  // Build ancestor chain + siblings
-  const chain = [];
-  let cur = node;
-  while (cur) { chain.unshift(cur); cur = cur.p ? bySeq.get(cur.p) : null; }
-
-  // Get siblings (children of parent)
-  const parent = node.p ? bySeq.get(node.p) : null;
-  const siblings = parent ? parent.children : roots;
-  const nodeIdx = siblings.findIndex(s => s.s === node.s);
-
-  let html = `<div class="flow-track"><div class="flow-line"></div>`;
-
-  // Show 2 items before, current, 2 items after among siblings
-  const start = Math.max(0, nodeIdx - 2);
-  const end   = Math.min(siblings.length - 1, nodeIdx + 2);
-
-  for (let i = start; i <= end; i++) {
-    const sib = siblings[i];
-    const isCur = sib.s === node.s;
-    const isAdj = Math.abs(i - nodeIdx) === 1;
-    html += `<div class="flow-item" onclick="selectAndReveal('${sib.s}')">
-      <div class="flow-dot${isCur?' current':isAdj?' adjacent':''}"></div>
-      <div class="flow-text${isCur?' current':isAdj?' adjacent':''}">${esc(sib.t.length > 45 ? sib.t.slice(0,43)+'…' : sib.t)}</div>
-    </div>`;
-  }
-
-  if (siblings.length > 5) {
-    html += `<div style="font-size:10px;color:var(--tx3);padding:4px 0">${siblings.length - 5} more in this level</div>`;
-  }
-  html += `</div>`;
-  el.innerHTML = html;
-}
-
-function renderRailRelated(node) {
-  const el = document.getElementById('rail-related');
-  // Find siblings with different products (same parent = same process, different product variant)
-  const parent = node.p ? bySeq.get(node.p) : null;
-  if (!parent) { el.innerHTML = '<span class="rail-empty">—</span>'; return; }
-
-  const related = parent.children.filter(c => c.s !== node.s && c.y === node.y).slice(0, 5);
-  if (!related.length) { el.innerHTML = '<span class="rail-empty">No parallel variants</span>'; return; }
-
-  el.innerHTML = related.map(r => `
-    <div class="related-card" onclick="selectAndReveal('${r.s}')">
-      <div class="related-prod">${r.pr.join(', ') || r.af.join(', ') || r.y}</div>
-      <div class="related-title">${esc(r.t.length > 55 ? r.t.slice(0,53)+'…' : r.t)}</div>
-    </div>
-  `).join('');
-}
-
-function renderRailDocs(node) {
-  const el = document.getElementById('rail-docs');
-  const refs = node.r || [];
-  // Also collect parent refs
-  const parentNode = node.p ? bySeq.get(node.p) : null;
-  const allRefs = [...new Set([...refs, ...(parentNode ? parentNode.r || [] : [])])].slice(0, 4);
-
-  if (!allRefs.length) { el.innerHTML = '<span class="rail-empty">No documentation links</span>'; return; }
-
-  el.innerHTML = allRefs.map(ref => {
-    const label = ref.includes('learn.microsoft.com')
-      ? (ref.split('/').pop() || 'Documentation').replace(/-/g,' ').replace(/^\w/, c=>c.toUpperCase())
-      : 'Documentation link';
-    return `<a class="doc-link" href="${esc(ref)}" target="_blank" rel="noopener">
-      <svg class="doc-icon" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      <span class="doc-title">${esc(label.length > 50 ? label.slice(0,48)+'…' : label)}</span>
-    </a>`;
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════════════════
-// TAB SWITCHING
-// ════════════════════════════════════════════════════════════════
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const tab = document.querySelector(`[data-tab="${name}"]`);
-  if (!tab || tab.classList.contains('hidden')) { name = 'overview'; }
-  document.querySelector(`[data-tab="${name}"]`).classList.add('active');
-  document.getElementById(`panel-${name}`).classList.add('active');
-  state.activeTab = name;
-}
-
-// ════════════════════════════════════════════════════════════════
-// SEARCH
-// ════════════════════════════════════════════════════════════════
-let searchIdx = []; // flat index built on first open
-
-function buildSearchIndex() {
-  if (searchIdx.length) return;
-  bySeq.forEach(n => {
-    searchIdx.push({
-      s: n.s, t: n.t, y: n.y, d: n.d || '', qi: n.qi || '',
-      m: n.m || '', pr: n.pr.join(' '), af: n.af.join(' '),
-      _lower: (n.t + ' ' + (n.d||'') + ' ' + (n.qi||'') + ' ' + (n.m||'')).toLowerCase(),
-    });
-  });
-}
-
-function openSearch() {
-  buildSearchIndex();
-  document.getElementById('search-overlay').classList.add('open');
-  document.getElementById('search-input').focus();
-}
-
-function closeSearch() {
-  document.getElementById('search-overlay').classList.remove('open');
-  document.getElementById('search-input').value = '';
-  document.getElementById('search-results').innerHTML = '<div class="sr-hint">Search across all 5,873 nodes — titles, descriptions, APQC IDs, modules</div>';
-}
-
-let searchTimer;
-function doSearch(q) {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => _doSearch(q), 120);
-}
-
-function _doSearch(q) {
-  const container = document.getElementById('search-results');
-  q = q.trim();
-  if (!q) {
-    container.innerHTML = '<div class="sr-hint">Search across all 5,873 nodes — titles, descriptions, APQC IDs, modules</div>';
-    return;
-  }
-
-  const lower = q.toLowerCase();
-  const words = lower.split(/\s+/);
-  const results = searchIdx.filter(n => words.every(w => n._lower.includes(w)));
-
-  if (!results.length) {
-    container.innerHTML = `<div class="sr-empty">No results for "${esc(q)}"</div>`;
-    return;
-  }
-
-  // Score: title match > start of title > anywhere
-  results.forEach(r => {
-    const tl = r.t.toLowerCase();
-    r._score = tl === lower ? 100 : tl.startsWith(lower) ? 80 : tl.includes(lower) ? 60 : 40;
-  });
-  results.sort((a,b) => b._score - a._score);
-  const top = results.slice(0, 40);
-
-  // Group by type
-  const groups = {};
-  const typeOrder = ['End to end','Process area','Process','Scenario','System process','Test case'];
-  top.forEach(r => { (groups[r.y] = groups[r.y] || []).push(r); });
-
-  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-  function hilite(s) { return esc(s).replace(re, '<mark>$1</mark>'); }
-
-  let html = '';
-  typeOrder.forEach(type => {
-    if (!groups[type]) return;
-    const badge = TYPE_LABEL[type] || type;
-    const badgeClass = { 'End to end':'E2E','Process area':'Area','Process':'Proc','Scenario':'Scen','System process':'Sys','Test case':'Test' }[type]||'';
-    html += `<div class="sr-group-label">${esc(type)} (${groups[type].length}${groups[type].length===results.filter(r=>r.y===type).length?'':'+'})</div>`;
-    groups[type].forEach(r => {
-      // Build path
-      const chain = [];
-      let cur = bySeq.get(r.s);
-      while (cur && cur.p) { cur = bySeq.get(cur.p); if(cur) chain.unshift(cur.t); }
-      const path = chain.slice(-3).join(' › ');
-
-      html += `<div class="sr-item" onclick="selectFromSearch('${r.s}')" tabindex="0">
-        <span class="sr-badge ${badgeClass}">${badge}</span>
-        <div>
-          <div class="sr-title">${hilite(r.t.length > 80 ? r.t.slice(0,78)+'…' : r.t)}</div>
-          ${path ? `<div class="sr-path">${esc(path.length > 70 ? path.slice(0,68)+'…' : path)}</div>` : ''}
-        </div>
-      </div>`;
-    });
-  });
-
-  if (results.length > 40) {
-    html += `<div class="sr-hint">${results.length - 40} more results — refine your search</div>`;
-  }
-
-  container.innerHTML = html;
-}
-
-function selectFromSearch(seq) {
-  closeSearch();
-  selectAndReveal(seq);
-}
-
-// ════════════════════════════════════════════════════════════════
-// NAVIGATION HELPERS
-// ════════════════════════════════════════════════════════════════
-function selectAndReveal(seq) {
-  const node = bySeq.get(seq);
-  if (!node) return;
-
-  // Expand all ancestors
-  let cur = node;
-  while (cur.p) {
-    cur = bySeq.get(cur.p);
-    if (cur) state.expanded.add(cur.s);
-  }
-
-  state.selected = seq;
-  renderTree();
-  loadContent(node);
-  updateURL(seq);
-
-  // Scroll selected into view
-  setTimeout(() => {
-    const el = document.querySelector('.t-node.selected');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 80);
-}
-
-// ════════════════════════════════════════════════════════════════
-// URL STATE
-// ════════════════════════════════════════════════════════════════
-function updateURL(seq) {
-  if (history.replaceState) {
-    history.replaceState(null, '', '#' + seq);
-  }
-}
-
-function restoreFromURL() {
-  const hash = location.hash.slice(1);
-  if (hash && bySeq.has(hash)) {
-    selectAndReveal(hash);
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-// KEYBOARD
-// ════════════════════════════════════════════════════════════════
-document.addEventListener('keydown', e => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault(); openSearch();
-  }
-  if (e.key === 'Escape') {
-    if (document.getElementById('search-overlay').classList.contains('open')) closeSearch();
+// ── Keyboard ──────────────────────────────
+document.addEventListener('keydown',ev=>{
+  if((ev.metaKey||ev.ctrlKey)&&ev.key==='k'){ev.preventDefault();openSearch();}
+  if(ev.key==='Escape'){
+    if(document.getElementById('sov').classList.contains('on'))closeSearch();
+    if(document.getElementById('aov').classList.contains('on'))closeAbout();
   }
 });
 
-// ════════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════════
-window.addEventListener('load', () => {
-  // Small delay to let fonts load
-  setTimeout(() => {
+// ── Init ──────────────────────────────────
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
     build();
+    roots.slice(0,1).forEach(r=>ST.exp.add(r.s));
     renderTree();
-
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('app').style.display = 'flex';
-
-    // Expand first E2E by default for quick start
-    if (roots.length) {
-      state.expanded.add(roots[0].s);
-      renderTree();
-    }
-
-    restoreFromURL();
-
-    setTimeout(() => {
-      document.getElementById('loading').remove();
-    }, 500);
-  }, 200);
+    const ld=document.getElementById('ld');
+    ld.classList.add('fade');
+    document.getElementById('app').style.display='flex';
+    setTimeout(()=>ld.remove(),600);
+    restoreH();
+  },250);
 });
 </script>
 </body>
